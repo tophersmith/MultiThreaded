@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.custom.storage.HashCodeStorage;
+import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
 public class HashCode extends ExecutionType{
@@ -32,17 +33,19 @@ public class HashCode extends ExecutionType{
 	}
 	@Override
 	protected void generateQueuesByName(int generators) {
-		super.generatorQueues.put(this.userQueueName, new ArrayBlockingQueue<String>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
-		super.generatorQueues.put(this.passQueueName, new ArrayBlockingQueue<String>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
+		super.generatorQueues.put(this.userQueueName, new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
+		super.generatorQueues.put(this.passQueueName, new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
 	}
 
 	@Override
-	public void collectGuesses(Map<String, BlockingQueue<String>> queue) {
+	public void collectGuesses(Map<String, BlockingQueue<SingleGuess>> queue) {
 		try {
+			Thread.sleep(5000);
 			String u, p;
-			while((u = queue.get(this.userQueueName).poll()) != null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
-				while((p = queue.get(this.passQueueName).poll())!= null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+			while((u = queue.get(this.userQueueName).poll().toString()) != null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+				while((p = queue.get(this.passQueueName).poll().toString())!= null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
 					this.guessQueue.put(new HashCodeStorage(u, p));
+					this.log.debug("put " + u + ":" + p);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -55,6 +58,8 @@ public class HashCode extends ExecutionType{
 		if(guess instanceof HashCodeStorage){
 			String user = ((HashCodeStorage) guess).getUser();
 			String pass = ((HashCodeStorage) guess).getPass();
+			if(user.equals("smitc"))
+				System.out.println();
 			this.actionMap.put("UserIdentifier", user);
 			this.actionMap.put("Password", pass);
 			int test1 = this.actionMap.hashCode();

@@ -16,7 +16,7 @@ public class ConsumerThread implements Runnable{
 	private BlockingQueue<GuessObject> queue;
 	
 	private int count = 0;
-	private final int countMax = 1000000;
+	private final int countMax = 100000;
 	private final Logger log = new Logger();
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 
@@ -38,6 +38,7 @@ public class ConsumerThread implements Runnable{
 				}
 				
 				GuessObject go = this.queue.take();
+				this.log.debug("taken " + go.toString());
 				if(this.exType.isCorrect(go)){
 					this.exType.storeCorrectGuess(go);
 					if(this.exType.stopOnFirstCorrectGuess()){
@@ -45,7 +46,7 @@ public class ConsumerThread implements Runnable{
 					}
 				}
 					
-				if(this.count++ > this.countMax){
+				if(++this.count >= this.countMax){
 					this.log.info(this.toString() + " Iteration: " + this.count + " Current Guess: " + this.exType.provideConsoleUpdate(go));
 					this.count = 0;
 				}

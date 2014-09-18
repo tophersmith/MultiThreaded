@@ -9,11 +9,12 @@ import java.util.concurrent.BlockingQueue;
 import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.helpers.Logger;
+import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
 
 public abstract class ExecutionType {
 	private final boolean stopOnFirstCorrect;
-	protected Map<String, BlockingQueue<String>> generatorQueues;
+	protected Map<String, BlockingQueue<SingleGuess>> generatorQueues;
 	protected BlockingQueue<GuessObject> guessQueue;
 	protected List<GuessObject> correctGuesses;
 	protected GeneratorInfo[] generators;
@@ -34,9 +35,9 @@ public abstract class ExecutionType {
 		assignGeneratorNames();
 	}
 
-	public Map<String, BlockingQueue<String>> generateQueues(int generators) {
+	public Map<String, BlockingQueue<SingleGuess>> generateQueues(int generators) {
 		if(this.generatorQueues == null){
-			this.generatorQueues = new HashMap<String, BlockingQueue<String>>();
+			this.generatorQueues = new HashMap<String, BlockingQueue<SingleGuess>>();
 			this.generateQueuesByName(generators);
 		}
 		return this.generatorQueues;
@@ -64,7 +65,7 @@ public abstract class ExecutionType {
 		return this.generators;
 	}
 	protected abstract void assignGeneratorNames();
-	public abstract void collectGuesses(Map<String, BlockingQueue<String>> queue);
+	public abstract void collectGuesses(Map<String, BlockingQueue<SingleGuess>> queue);
 	protected abstract void generateQueuesByName(int generators);
 	public abstract boolean isCorrect(Object guess);
 	protected abstract String formatCorrectGuesses(); 

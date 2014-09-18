@@ -12,13 +12,14 @@ import spytools.multi.custom.execplan.ExecutionType;
 import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.SetupException;
+import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
 public class ProducerManagement implements Runnable{
 	private ExecutionType exType;
 	private List<GeneratorInfo> gens;
-	private Map<String, BlockingQueue <String>> collectionQueue;
+	private Map<String, BlockingQueue <SingleGuess>> collectionQueue;
 	
 	private int numProducerThreads;
 	private ExecutorService exec; //manages sub threads
@@ -61,7 +62,7 @@ public class ProducerManagement implements Runnable{
 	@Override
 	public void run() {
 		for(ThreadDist td : this.threadDist){
-			final int max = td.maxAlloc;
+			final int max = td.currentAlloc;
 			for(int i = 0; i < max; i++){
 				final int curThread = i;
 				td.gen.init(curThread, max, this.collectionQueue);
@@ -131,7 +132,7 @@ public class ProducerManagement implements Runnable{
 		}
 		
 		if(remainingThreads > 0){
-			setupDist = distributeRemaining(setupDist, remainingThreads);
+			remainingThreads = distributeRemaining(setupDist, remainingThreads);
 		}
 		
 		this.unusedThreads = remainingThreads;
@@ -143,7 +144,7 @@ public class ProducerManagement implements Runnable{
 		return setupDist;
 	}
 	
-	private static List<ThreadDist> distributeRemaining(List<ThreadDist> setupDist, int remainingThreads){
+	private static int distributeRemaining(List<ThreadDist> setupDist, int remainingThreads){
 		List<ThreadDist> dist = new ArrayList<ThreadDist>();
 		int count = 0;
 		ThreadDist td;
@@ -160,7 +161,8 @@ public class ProducerManagement implements Runnable{
 				count = 0;
 			}
 		}
-		return dist;
+		setupDist.addAll(dist); 
+		return remainingThreads;
 	}
 	
 }

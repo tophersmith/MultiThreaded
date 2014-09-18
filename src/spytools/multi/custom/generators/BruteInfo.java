@@ -44,11 +44,11 @@ public class BruteInfo extends GeneratorInfo {
 	}
 	
 	private void resetCounter(){
-		this.currentGuessNum = this.min.subtract(BigInteger.ONE);
+		this.currentGuessNum = this.min;
 	}
 
 	@Override
 	public String toString(){
-		return "BruteProducerThread-" + this.threadNum;
+		return "BruteProducerThread-" + this.threadNum + "-Queue-" + this.generatorQueueName;
 	}
 }
