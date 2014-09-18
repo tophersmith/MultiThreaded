@@ -51,9 +51,10 @@ public class ConsumerThread implements Runnable{
 					this.count = 0;
 				}
 			}
-			consumerDone();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			this.log.debug(this.toString() + " Interrupted.");
+		} finally{
+			consumerDone();
 		}
 	}
 	

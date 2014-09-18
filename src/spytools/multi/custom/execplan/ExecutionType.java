@@ -18,8 +18,8 @@ public abstract class ExecutionType {
 	protected BlockingQueue<GuessObject> guessQueue;
 	protected List<GuessObject> correctGuesses;
 	protected GeneratorInfo[] generators;
-	protected static final int MAX_GENERATOR_QUEUE_SIZE = 10000000;
-	protected static final int MAX_GUESS_QUEUE_SIZE = 10000000;
+	protected static final int MAX_GENERATOR_QUEUE_SIZE = 10000;
+	protected static final int MAX_GUESS_QUEUE_SIZE = 10000;
 	
 	protected final Logger log = new Logger();
 	protected ThreadNotifier notifier = ThreadNotifier.getInstance();

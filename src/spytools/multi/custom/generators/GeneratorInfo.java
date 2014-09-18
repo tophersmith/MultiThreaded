@@ -13,6 +13,7 @@ public abstract class GeneratorInfo implements Runnable{
 	String generatorQueueName;
 	BlockingQueue<SingleGuess> queue;
 	int threadNum;
+	BigInteger bigThreadNum;
 	int totalThreadNum;
 	BigInteger bigTotalThreadNum;
 	String threadName;
@@ -22,6 +23,7 @@ public abstract class GeneratorInfo implements Runnable{
 	
 	public void init(int threadNum, int totalThreads, Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
 		this.threadNum = threadNum;
+		this.bigThreadNum = BigInteger.valueOf(this.threadNum);
 		this.totalThreadNum = totalThreads;
 		this.bigTotalThreadNum = BigInteger.valueOf(this.totalThreadNum);
 		this.threadName = "Thread-" + this.threadNum;

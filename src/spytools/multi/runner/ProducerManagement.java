@@ -77,15 +77,18 @@ public class ProducerManagement implements Runnable{
 	}
 
 	public void notifyDone(){
-		this.notifier.isDone(ThreadType.PRODUCER_THREAD);
-		this.notifier.isDone(ThreadType.PRODUCER_MANAGEMENT);
+		this.notifier.setDone(ThreadType.PRODUCER_THREAD);
+		this.notifier.setDone(ThreadType.PRODUCER_MANAGEMENT);
+		this.notifier.haltThread(ThreadType.PRODUCER_THREAD);
+		for(String s: this.collectionQueue.keySet()){
+			this.collectionQueue.get(s).clear();
+		}
 	}
 	
 	public void shutdown(){
 		try{
-			this.notifier.haltThread(ThreadType.PRODUCER_MANAGEMENT);
-			this.notifier.haltThread(ThreadType.PRODUCER_THREAD);
-			this.exec.awaitTermination(5, TimeUnit.SECONDS);
+			this.exec.shutdown();
+			this.exec.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
@@ -93,6 +96,7 @@ public class ProducerManagement implements Runnable{
 			for(String s: this.collectionQueue.keySet()){
 				this.collectionQueue.get(s).clear();
 			}
+			this.notifier.haltThread(ThreadType.PRODUCER_MANAGEMENT);
 		}
 	}
 	

@@ -37,11 +37,13 @@ public class ConsumerManagement implements Runnable{
 		
 		try {
 			while(!this.notifier.shouldHalt(ThreadType.CONSUMER_MANAGEMENT) && !threads.isEmpty()){
+				if(this.exType.getGuessQueue().isEmpty() && this.notifier.isDone(ThreadType.PRODUCER_THREAD))
+					break;
 				for(ConsumerThread c : threads){
 					if(c.isDone())
 						threads.remove(c);
 				}
-				Thread.sleep(10000);
+				Thread.sleep(1000);
 			}
 			notifyDone();
 		} catch (InterruptedException e) {
@@ -53,14 +55,15 @@ public class ConsumerManagement implements Runnable{
 	}
 	
 	public void notifyDone(){
-		this.notifier.isDone(ThreadType.CONSUMER_THREAD);
-		this.notifier.isDone(ThreadType.CONSUMER_MANAGEMENT);
+		this.notifier.setDone(ThreadType.CONSUMER_THREAD);
+		this.notifier.setDone(ThreadType.CONSUMER_MANAGEMENT);
 	}
 	
 	public void shutdown(){
 		try{
 			this.notifier.haltThread(ThreadType.CONSUMER_MANAGEMENT);
 			this.notifier.haltThread(ThreadType.CONSUMER_THREAD);
+			this.shutdown();
 			this.exec.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (Exception e){
 			e.printStackTrace();

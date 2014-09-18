@@ -39,16 +39,19 @@ public class HashCode extends ExecutionType{
 
 	@Override
 	public void collectGuesses(Map<String, BlockingQueue<SingleGuess>> queue) {
+		String u = "";
+		String p = "";
 		try {
 			Thread.sleep(5000);
-			String u, p;
-			while((u = queue.get(this.userQueueName).poll().toString()) != null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
-				while((p = queue.get(this.passQueueName).poll().toString())!= null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+			while((u = queue.get(this.userQueueName).take().toString()) != null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+				while((p = queue.get(this.passQueueName).take().toString())!= null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
 					this.guessQueue.put(new HashCodeStorage(u, p));
 					this.log.debug("put " + u + ":" + p);
 				}
 			}
 		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
