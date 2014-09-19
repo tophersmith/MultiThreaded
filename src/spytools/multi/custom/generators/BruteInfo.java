@@ -8,8 +8,10 @@ import spytools.multi.helpers.Helpers;
 import spytools.multi.helpers.SingleGuess;
 
 public class BruteInfo extends GeneratorInfo {
-	private BigInteger min;
-	private BigInteger max;
+	private final int minLength;
+	private final BigInteger min;
+	private final int maxLength;
+	private final BigInteger max;
 	private char[] charSet; // Character Set
 	
 	private BigInteger currentGuessNum = null;
@@ -17,14 +19,21 @@ public class BruteInfo extends GeneratorInfo {
 	
 	public BruteInfo(int min, int max, Object charSet){
 		this.charSet = Helpers.generateCharSet(charSet);
-		this.min = Helpers.findGuessValueFromLength(min, this.charSet);
-		this.max = Helpers.findGuessValueFromLength(max+1, this.charSet);
-		resetCounter();
+		this.minLength = min;
+		this.min = Helpers.findGuessValueFromLength(this.minLength, this.charSet);
+		this.maxLength = max;
+		this.max = Helpers.findGuessValueFromLength(this.maxLength+1, this.charSet);
 	}
+	
+	@Override
+	public BruteInfo newInstance(){
+		return new BruteInfo(this.minLength, this.maxLength, this.charSet);
+	}
+	
 	@Override
 	public void init(int threadNum, int totalThreads, Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
 		super.init(threadNum, totalThreads, collectionQueue);
-		this.min = this.min.add(this.bigThreadNum);
+		resetCounter();
 	}
 	
 	@Override 
@@ -47,12 +56,11 @@ public class BruteInfo extends GeneratorInfo {
 		}
 		this.currentGuess = Helpers.stringifyCharArray(Helpers.createCharArray(this.currentGuessNum, this.charSet));
 		this.currentGuessNum = this.currentGuessNum.add(this.bigTotalThreadNum);
-		
 		return this.currentGuess;
 	}
 	
 	private void resetCounter(){
-		this.currentGuessNum = this.min;
+		this.currentGuessNum = this.min.add(this.bigThreadNum);
 	}
 
 	@Override

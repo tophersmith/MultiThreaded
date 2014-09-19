@@ -1,5 +1,6 @@
 package spytools.multi.custom.execplan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,31 +15,30 @@ import spytools.multi.helpers.ThreadNotifier;
 
 public abstract class ExecutionType {
 	private final boolean stopOnFirstCorrect;
-	protected Map<String, BlockingQueue<SingleGuess>> generatorQueues;
-	protected BlockingQueue<GuessObject> guessQueue;
+	private Map<String, BlockingQueue<SingleGuess>> generatorQueues;
+	private BlockingQueue<GuessObject> guessQueue;
 	protected List<GuessObject> correctGuesses;
 	protected GeneratorInfo[] generators;
 	protected static final int MAX_GENERATOR_QUEUE_SIZE = 10000;
 	protected static final int MAX_GUESS_QUEUE_SIZE = 10000;
-	
 	protected final Logger log = new Logger();
 	protected ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
 	protected ExecutionType(boolean stopOnFirst){
 		this.guessQueue = new ArrayBlockingQueue<GuessObject>(MAX_GUESS_QUEUE_SIZE);
 		this.stopOnFirstCorrect = stopOnFirst;
+		this.correctGuesses = new ArrayList<GuessObject>();
 	}
 
 	public void addGenerators(GeneratorInfo... gen) {
 		this.generators = gen;
-		
 		assignGeneratorNames();
 	}
 
 	public Map<String, BlockingQueue<SingleGuess>> generateQueues(int generators) {
 		if(this.generatorQueues == null){
 			this.generatorQueues = new HashMap<String, BlockingQueue<SingleGuess>>();
-			this.generateQueuesByName(generators);
+			this.generateQueuesByName(this.generatorQueues, generators);
 		}
 		return this.generatorQueues;
 	}
@@ -64,12 +64,30 @@ public abstract class ExecutionType {
 	public GeneratorInfo[] getGenerators() {
 		return this.generators;
 	}
+
+	public void clearCollector(Map<String, BlockingQueue<SingleGuess>> collectionQueue){
+		for(String s : collectionQueue.keySet())
+			collectionQueue.get(s).clear();
+	}
+
+	public void addGuessObject(GuessObject guess) throws InterruptedException {
+		this.guessQueue.put(guess);
+	}
 	protected abstract void assignGeneratorNames();
-	public abstract void collectGuesses(Map<String, BlockingQueue<SingleGuess>> queue);
-	protected abstract void generateQueuesByName(int generators);
-	public abstract boolean isCorrect(Object guess);
+	public abstract void collectGuesses(Map<String, BlockingQueue<SingleGuess>> collectionQueue);
+	protected abstract void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators);
 	protected abstract String formatCorrectGuesses(); 
-	public abstract void reset();
 	public abstract String provideConsoleUpdate(GuessObject go);
+	public abstract ExecutionConsumer getConsumer();
+	
+	public abstract class ExecutionConsumer{
+		public abstract boolean isCorrect(Object guess);
+		public abstract void reset();
+	}
+
+	@Override
+	public String toString(){
+		return "Generator";
+	}
 
 }

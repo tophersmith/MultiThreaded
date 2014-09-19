@@ -16,7 +16,7 @@ import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-public class ProducerManagement implements Runnable{
+public class ProducerManagement extends ManagementThread implements Runnable{
 	private ExecutionType exType;
 	private List<GeneratorInfo> gens;
 	private Map<String, BlockingQueue <SingleGuess>> collectionQueue;
@@ -65,29 +65,33 @@ public class ProducerManagement implements Runnable{
 			final int max = td.currentAlloc;
 			for(int i = 0; i < max; i++){
 				final int curThread = i;
-				td.gen.init(curThread, max, this.collectionQueue);
-				this.exec.execute(td.gen);
+				GeneratorInfo gen = td.gen.createNewInstance();
+				gen.init(curThread, max, this.collectionQueue);
+				this.exec.execute(gen);
 			}
 		}
 		//this is long running, it stops when there are no more guesses to generate
 		this.exType.collectGuesses(this.collectionQueue);
 		
-		notifyDone();
 		shutdown();
+		notifyDone();
 	}
 
+	@Override
 	public void notifyDone(){
 		this.notifier.setDone(ThreadType.PRODUCER_THREAD);
 		this.notifier.setDone(ThreadType.PRODUCER_MANAGEMENT);
-		this.notifier.haltThread(ThreadType.PRODUCER_THREAD);
 		for(String s: this.collectionQueue.keySet()){
 			this.collectionQueue.get(s).clear();
 		}
 	}
 	
+	@Override
 	public void shutdown(){
 		try{
+			this.notifier.haltThread(ThreadType.PRODUCER_THREAD);
 			this.exec.shutdown();
+			this.exType.clearCollector(this.collectionQueue);
 			this.exec.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (Exception e){
 			e.printStackTrace();
@@ -142,7 +146,7 @@ public class ProducerManagement implements Runnable{
 		this.unusedThreads = remainingThreads;
 		
 		if(remainingThreads > 0)
-			System.out.println("WARNING: You have " + remainingThreads + " unused producer threads.");
+			this.log.debug("You have " + remainingThreads + " unused producer threads.");
 		
 		
 		return setupDist;

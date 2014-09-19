@@ -11,9 +11,10 @@ public class ThreadNotifier {
 		return inst;
 	}
 
-	public enum ThreadType{CONSUMER_MANAGEMENT, PRODUCER_MANAGEMENT, CONSUMER_THREAD, PRODUCER_THREAD}
+	public enum ThreadType{MAIN, CONSUMER_MANAGEMENT, PRODUCER_MANAGEMENT, CONSUMER_THREAD, PRODUCER_THREAD}
 
 	private static enum ThreadInfo{
+		MAIN(ThreadType.MAIN),
 		CON_MGT(ThreadType.CONSUMER_MANAGEMENT),
 		PRO_MGT(ThreadType.PRODUCER_MANAGEMENT),
 		CON_THD(ThreadType.CONSUMER_THREAD),

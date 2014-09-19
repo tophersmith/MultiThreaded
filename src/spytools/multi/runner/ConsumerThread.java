@@ -3,6 +3,7 @@ package spytools.multi.runner;
 import java.util.concurrent.BlockingQueue;
 
 import spytools.multi.custom.execplan.ExecutionType;
+import spytools.multi.custom.execplan.ExecutionType.ExecutionConsumer;
 import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.ThreadNotifier;
@@ -10,8 +11,10 @@ import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
 public class ConsumerThread implements Runnable{
 	private ExecutionType exType;
-
+	private ExecutionConsumer exConsume;
+	
 	private int threadNum;
+	private int totalThreads;
 	
 	private BlockingQueue<GuessObject> queue;
 	
@@ -22,29 +25,33 @@ public class ConsumerThread implements Runnable{
 
 	private volatile boolean done = false;
 	
-	public ConsumerThread(ExecutionType exType, int curThread){
+	public ConsumerThread(ExecutionType exType, int curThread, int totalThreads){
 		this.exType = exType;
+		this.exConsume = this.exType.getConsumer();
 		this.threadNum = curThread;
+		this.totalThreads = totalThreads;
 		this.queue = this.exType.getGuessQueue();
 	}
 	
 	@Override
 	public void run() {
 		try {
-			while(!this.notifier.shouldHalt(ThreadType.CONSUMER_THREAD)){
+			while(!this.notifier.shouldHalt(ThreadType.CONSUMER_THREAD) || (this.queue.size() >=  this.totalThreads)){
 				
 				if(this.queue.isEmpty()){
 					this.log.debug(this.toString() + " reports empty guess queue");
 				}
 				
 				GuessObject go = this.queue.take();
-				this.log.debug("taken " + go.toString());
-				if(this.exType.isCorrect(go)){
+				
+				this.log.debug(this.toString() + " taken " + go.toString());
+				if(this.exConsume.isCorrect(go)){
 					this.exType.storeCorrectGuess(go);
 					if(this.exType.stopOnFirstCorrectGuess()){
 						this.notifier.haltAll();
 					}
 				}
+				this.exConsume.reset();
 					
 				if(++this.count >= this.countMax){
 					this.log.info(this.toString() + " Iteration: " + this.count + " Current Guess: " + this.exType.provideConsoleUpdate(go));

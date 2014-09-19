@@ -12,10 +12,19 @@ public class DictionaryInfo extends GeneratorInfo{
 	private BufferedReader reader;
 	private String currentGuess;
 	
-	public DictionaryInfo(String name, File dict) throws FileNotFoundException{
+	public DictionaryInfo(File dict){
 		this.dictionaryFile = dict;
-		this.reader = new BufferedReader(new FileReader(this.dictionaryFile));
+		try {
+			this.reader = new BufferedReader(new FileReader(this.dictionaryFile));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		this.currentGuess = null;
+	}
+	
+	@Override
+	public DictionaryInfo newInstance(){
+		return new DictionaryInfo(this.dictionaryFile);
 	}
 	
 	@Override 

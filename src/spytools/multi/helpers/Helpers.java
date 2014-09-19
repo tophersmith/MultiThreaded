@@ -86,6 +86,8 @@ public class Helpers {
 		if(charSet instanceof CharSetType){
 			return generateCharSets((CharSetType)charSet);
 		}
+		if(charSet instanceof char[])
+			return (char[]) charSet;
 		return generateCharSets((CharSetType[])charSet);
 	}
 	

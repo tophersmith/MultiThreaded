@@ -36,8 +36,11 @@ public abstract class GeneratorInfo implements Runnable{
 			try{
 				String s = this.generateNextGuess();
 				this.queue.put(new SingleGuess(s));
-				this.log.debug("offered " + s);
-			}catch(Exception e){
+				this.log.debug(this.toString() + " offered " + s);
+			} catch(InterruptedException e){
+				if(!this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD))
+					e.printStackTrace();
+			} catch(Exception e){
 				e.printStackTrace();
 			}
 		}
@@ -49,9 +52,16 @@ public abstract class GeneratorInfo implements Runnable{
 		this.generatorQueueName = name;
 	}
 	
+	public GeneratorInfo createNewInstance(){
+		GeneratorInfo gen = this.newInstance();
+		gen.generatorQueueName = this.generatorQueueName;
+		return gen;
+	}
+	
 	public abstract int getNeededThreads();
 	public abstract int getMaxThreads(int available);
 	public abstract String generateNextGuess();
 	@Override
 	public abstract String toString();
+	public abstract GeneratorInfo newInstance();
 }

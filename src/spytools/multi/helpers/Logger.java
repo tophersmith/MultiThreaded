@@ -6,7 +6,7 @@ import java.util.Date;
 public class Logger {
 
 	private static SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static boolean debugEnabled = false;
+	private static boolean debugEnabled = true;
 
 	private static final Object infoLock = new Object();
 	public void info(String message) {
