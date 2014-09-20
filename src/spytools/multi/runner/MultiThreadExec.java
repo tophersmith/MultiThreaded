@@ -1,12 +1,10 @@
 package spytools.multi.runner;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import spytools.multi.custom.execplan.ExecutionType;
-import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;

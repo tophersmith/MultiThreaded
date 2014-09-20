@@ -1,11 +1,9 @@
 package spytools.multi.custom.execplan;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.execplan.ExecutionType.ExecutionConsumer;
 import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.custom.storage.HashCodeStorage;
 import spytools.multi.helpers.SingleGuess;
@@ -26,7 +24,6 @@ public class HashCode extends ExecutionType{
 	protected void assignGeneratorNames(){
 		this.generators[0].setGeneratorName(this.userQueueName);
 		this.generators[1].setGeneratorName(this.passQueueName);
-		
 	}
 	
 	@Override

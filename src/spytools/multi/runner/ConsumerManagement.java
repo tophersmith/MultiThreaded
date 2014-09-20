@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import spytools.multi.custom.execplan.ExecutionType;
-import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
@@ -47,11 +46,7 @@ public class ConsumerManagement extends ManagementThread implements Runnable{
 					if(c.isDone())
 						iter.remove();
 				}
-				Thread.sleep(1000);
 			}
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		} finally {
 			shutdown();
 			notifyDone();
@@ -76,6 +71,7 @@ public class ConsumerManagement extends ManagementThread implements Runnable{
 		} finally {
 			this.exec.shutdownNow();	
 			this.notifier.haltThread(ThreadType.CONSUMER_MANAGEMENT);
+			this.log.debug("ConsumerThreads complete");
 		}
 	}
 }

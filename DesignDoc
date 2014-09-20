@@ -1,0 +1,26 @@
+Server:
+
+
+
+Client:
+	Execution Flow:
+		Multiple potential Generator(s)
+		One configurable ExecutionType
+		ExecutionType takes in the Generator(s)
+		Main calls MultiThreadExec which contains executor for ProducerManagement and ConsumerManagement
+			ProducerManagement handles creating the suggested number of producers, if given, or the total available threads/2, by default and collecting their output
+				Producers utilize each generator in a combination so that every possible outcome is achieved
+					each guess generated goes on a unique queue to be combined at some later time
+				Management collects guesses from each queue (as dictated by the ExecutionType) into a GuessObject and putting that on the guessQueue
+				Once the ProducerManagement call to the ExecutionType collection method determines all guesses have been made, or the thread is marked for halting, the management thread begins shutdown
+				Shutdown notifies the producers threads of a halt status, allows them to try to shut down, then forcibly kills them all, if necessary. It then drains the collectionQueue(s), but not the guessQueue and ends its own context
+			ConsumerManagement handles delegating ConsumerThreads to test each GuessObject
+				Each ConsumerThread has an instance of the ExecutionType's ExecutionConsumer 
+				Consumers take a GuessObject from the GuessQueue and submit it to the ExecutionConsumer instance's isCorrect method, then resets the ExecutionConsumer
+				if the guess is correct, it is appended to the correctGuesses List in the ExecutionType class
+				if the ExecutionType dictates that the process should stop on the first guess, then the ConsumerThread notifies all threads to initiate a shutdown (both managers and all subthreads)
+				if the process should keep going, it does so until the guessQueue is empty, when the threads die and ConsumerManagement initiates a shutdown (ProducerManagement is already shutdown since there are no more GuessObjects)
+				Shutdown notifies all ConsumerThreads to stop executing, tries to stop each ConsumerThread waits a few seconds, then hard kills the threads it drains it's GuessQueue and ends its own context
+			MultiThreadExec now notices that both ManagementThreads are done and attempts its own (redundant) halt operations on each, killing subthreads if they exist, and the ManagementThreads, if they exist
+			It then outputs any/all results found to be good and then ends its own context
+		

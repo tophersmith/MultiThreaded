@@ -1,0 +1,46 @@
+
+NEAR-TERM
+When there are more than the minimum producers, production ends early. 
+	Issue exists within the collectGuesses check
+	Probably move the iteration logic out into producermanagement
+
+add comments and javadocs
+
+add better logger use/exceptions
+
+brute generator is stupidly slow
+	just use char array, previous guess + max producertype thread, use the charSet as boundaries.
+	try to avoid doing a guess counter
+	need to have a way to say guess the next x guesses
+
+test dictionary generator
+
+yourkit tests like mad
+	should execution contexts come from a pool?
+
+static string/character generator. e.g. hashcat's $1="HELLO" $2={a,b,c} generate($1$2) = HELLOa, HELLOb, HELLOc etc
+	Prefix/suffix generator that overrides the generate next, pre-/ap-pends the value, still lets other generators do work
+
+DISTRIBUTED
+Build client/server
+
+build frontend for server
+
+build server support for dropped clients
+	client heartbeat?
+	server chunks work to each client, marks as done and deletes when client checks in?
+		no heartbeat for x time, ping client, no response, issue error, send failed chunk to a new client
+	
+build server support for adding new clients
+	new client checks in, registers, accepts new work
+
+support sending potentially large files
+	and message passing for too large for filesystem
+	and cleanup (hash of file to check how long to keep)
+
+
+
+WISHLIST
+upgrade clients???
+
+rules generator/hybrid generator
