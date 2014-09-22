@@ -27,14 +27,14 @@ public class Logger {
 	private static final Object warningLock = new Object();
 	public void warning(String message) {
 		synchronized(warningLock){
-			printMessage("DEBUG", message);
+			printMessage("WARNING", message);
 		}
 	}
 
 	private static final Object errorLock = new Object();
 	public void error(String message) {
 		synchronized(errorLock){
-			printMessage("DEBUG", message);
+			printMessage("ERROR", message);
 		}
 	}
 

@@ -22,18 +22,8 @@ public class DictionaryInfo extends GeneratorInfo{
 		this.currentGuess = null;
 	}
 	
-	@Override
-	public DictionaryInfo newInstance(){
-		return new DictionaryInfo(this.dictionaryFile);
-	}
-	
 	@Override 
 	public int getNeededThreads(){
-		return 1;
-	}
-	
-	@Override
-	public int getMaxThreads(int available){
 		return 1;
 	}
 	

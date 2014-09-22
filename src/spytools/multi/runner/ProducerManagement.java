@@ -23,7 +23,6 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	
 	private int numProducerThreads;
 	private ExecutorService exec; //manages sub threads
-	List<ThreadDist> threadDist;
 	
 	private int unusedThreads;
 	
@@ -44,7 +43,6 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 		this.collectionQueue = exType.generateQueues(gen.length);
 		this.numProducerThreads = producerThreads;
 		this.exec = Executors.newFixedThreadPool(this.numProducerThreads);
-		this.threadDist = distributeThreads();
 	}
 	
 	public static int determineNeededThreads(GeneratorInfo... gen){
@@ -61,14 +59,12 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	
 	@Override
 	public void run() {
-		for(ThreadDist td : this.threadDist){
-			final int max = td.currentAlloc;
-			for(int i = 0; i < max; i++){
-				final int curThread = i;
-				td.gen.init(curThread, max, this.collectionQueue);
-				GeneratorInfo gen = td.gen.createNewInstance();
-				this.exec.execute(gen);
-			}
+		int i = 0;
+		for(GeneratorInfo gen : this.gens){
+			final int curThread = i;
+			gen.init(curThread, this.numProducerThreads, this.collectionQueue);
+			this.exec.execute(gen);
+			i++;
 		}
 		//this is long running, it stops when there are no more guesses to generate or the thread has been halted
 		try {
@@ -138,72 +134,6 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	}
 	
 	
-	/**
-	 * helper class to determine thread distribution
-	 * 
-	 * @author smitc
-	 */
-	private class ThreadDist{
-		public GeneratorInfo gen;
-		public int currentAlloc = 0;
-		public int maxAlloc;
-		public int min;
-		public ThreadDist(GeneratorInfo g, int availableThreads){
-			this.gen = g;
-			this.min = this.gen.getNeededThreads();
-			this.maxAlloc = this.gen.getMaxThreads(availableThreads);
-		}
-		public int reserveMinThreads(){
-			return reserveThread(this.min);
-		}
-		public int reserveThread(int numThreads){
-			this.currentAlloc += numThreads;
-			return numThreads;
-		}
-	}
-	
-	private List<ThreadDist> distributeThreads(){
-		List<ThreadDist> setupDist = new ArrayList<ThreadDist>();
-		int remainingThreads = this.numProducerThreads;
-		
-		for(GeneratorInfo g : this.gens){
-			ThreadDist td = new ThreadDist(g, this.numProducerThreads);
-			remainingThreads -= td.reserveMinThreads();
-			setupDist.add(td);
-		}
-		
-		if(remainingThreads > 0){
-			remainingThreads = distributeRemaining(setupDist, remainingThreads);
-		}
-		
-		this.unusedThreads = remainingThreads;
-		
-		if(remainingThreads > 0)
-			this.log.debug("You have " + remainingThreads + " unused producer threads.");
-		
-		
-		return setupDist;
-	}
-	
-	private static int distributeRemaining(List<ThreadDist> setupDist, int remainingThreads){
-		List<ThreadDist> dist = new ArrayList<ThreadDist>();
-		int count = 0;
-		ThreadDist td;
-		
-		while(remainingThreads > 0 && !setupDist.isEmpty()){
-			td = setupDist.get(count);
-			if(td.currentAlloc >= td.maxAlloc){
-				dist.add(setupDist.remove(count));
-			} else{
-				remainingThreads -= td.reserveThread(1);
-			}
-			count++;
-			if(count >= setupDist.size()){
-				count = 0;
-			}
-		}
-		setupDist.addAll(dist); 
-		return remainingThreads;
-	}
+
 	
 }

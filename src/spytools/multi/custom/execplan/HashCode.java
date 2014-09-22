@@ -46,7 +46,7 @@ public class HashCode extends ExecutionType{
 		}
 		String user = getGuessByGeneratorName(this.userQueueName, guesses).toString();
 		String pass = getGuessByGeneratorName(this.passQueueName, guesses).toString();
-			
+		System.out.println(user + ":" + pass);
 		return new HashCodeStorage(user, pass);
 	}
 	

@@ -26,11 +26,6 @@ public class BruteInfo extends GeneratorInfo {
 	}
 	
 	@Override
-	public BruteInfo newInstance(){
-		return new BruteInfo(this.minLength, this.maxLength, this.charSet);
-	}
-	
-	@Override
 	protected void initializeInfo() {
 		resetCounter();
 	}
@@ -40,11 +35,6 @@ public class BruteInfo extends GeneratorInfo {
 		return 1;
 	}
 	
-
-	@Override
-	public int getMaxThreads(int available){
-		return available;
-	}
 	
 	@Override
 	public String generateNextGuess(){

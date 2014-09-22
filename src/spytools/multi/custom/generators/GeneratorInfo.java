@@ -22,15 +22,12 @@ public abstract class GeneratorInfo implements Runnable{
 	protected ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
 	public void init(int threadNum, int totalThreads, Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
-		this.init(threadNum, totalThreads, collectionQueue.get(this.generatorQueueName));
-	}
-	private void init (int threadNum, int totalThreads,BlockingQueue<SingleGuess> guessQueue){
 		this.threadNum = threadNum;
 		this.bigThreadNum = BigInteger.valueOf(this.threadNum);
 		this.totalThreadNum = totalThreads;
 		this.bigTotalThreadNum = BigInteger.valueOf(this.totalThreadNum);
 		this.threadName = "Thread-" + this.threadNum;
-		this.queue = guessQueue;
+		this.queue = collectionQueue.get(this.generatorQueueName);
 		initializeInfo();
 	}
 	
@@ -63,18 +60,9 @@ public abstract class GeneratorInfo implements Runnable{
 		this.generatorQueueName = name;
 	}
 	
-	public GeneratorInfo createNewInstance(){
-		GeneratorInfo gen = this.newInstance();
-		gen.generatorQueueName = this.generatorQueueName;
-		gen.init(this.threadNum, this.totalThreadNum, this.queue);
-		return gen;
-	}
-	
 	protected abstract void initializeInfo();
 	public abstract int getNeededThreads();
-	public abstract int getMaxThreads(int available);
 	public abstract String generateNextGuess();
 	@Override
 	public abstract String toString();
-	public abstract GeneratorInfo newInstance();
 }
