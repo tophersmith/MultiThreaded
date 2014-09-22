@@ -1,6 +1,7 @@
 
 NEAR-TERM
-Fix Iteration number output from always being 100000
+GeneratorInfo subclasses are awful. Just restrict them to 1 thread each
+	in most cases this will be fine since consumers will take a lot longer
 
 add comments and javadocs
 

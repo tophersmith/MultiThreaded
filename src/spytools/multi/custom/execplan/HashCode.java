@@ -38,10 +38,16 @@ public class HashCode extends ExecutionType{
 	}
 
 	@Override
-	public GuessObject makeGuessObject(GeneratorInfo... gens) throws InterruptedException {
-		String u = gens[0].getQueue().take().toString();
-		String p = gens[1].getQueue().take().toString();
-		return new HashCodeStorage(u, p);
+	public GuessObject makeGuessObject(GeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException {
+		if(!(gens.length == 2 && guesses.length == 2)){
+			//TODO throw Exception
+			System.out.println("FAIL");
+			return new HashCodeStorage("","");
+		}
+		String user = getGuessByGeneratorName(this.userQueueName, guesses).toString();
+		String pass = getGuessByGeneratorName(this.passQueueName, guesses).toString();
+			
+		return new HashCodeStorage(user, pass);
 	}
 	
 
@@ -91,8 +97,7 @@ public class HashCode extends ExecutionType{
 				
 				test += getHash("Old password", "");
 				isGood = (isGood) || (test == this.target);
-				if (isGood)
-					System.out.println();
+
 				return isGood;
 				
 			}

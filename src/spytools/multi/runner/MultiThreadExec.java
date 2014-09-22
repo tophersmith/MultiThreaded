@@ -54,6 +54,7 @@ public class MultiThreadExec {
 		}
 		shutdownAll();
 		System.out.println(this.getResults());
+		System.out.println("Guesses: " + this.cThread.getFinalCount());
 		System.out.println("Time: " + ((System.nanoTime()-startTime)/1000000000.0));
 	}
 	

@@ -6,13 +6,16 @@ import spytools.multi.custom.generators.BruteInfo;
 import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.runner.MultiThreadExec;
+import spytools.multi.types.CharSetType;
 
 public class Main {
 
 	
 	public static void main(String[] s) throws SetupException{
-		GeneratorInfo b1 = new BruteInfo(5, 5, "smitc");
-		GeneratorInfo b2 = new BruteInfo(5, 5, "rules");
+		GeneratorInfo b1 = new BruteInfo(1, 3, CharSetType.NUMBER);
+		GeneratorInfo b2 = new BruteInfo(1, 3, CharSetType.NUMBER);
+		//GeneratorInfo b1 = new BruteInfo(1, 5, "smitc");
+		//GeneratorInfo b2 = new BruteInfo(1, 5, "rules");
 		ExecutionType t = new HashCode(1316888554);
 		t.addGenerators(b1, b2);
 		MultiThreadExec mte = new MultiThreadExec(t, 4);

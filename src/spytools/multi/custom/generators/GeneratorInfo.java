@@ -39,7 +39,7 @@ public abstract class GeneratorInfo implements Runnable{
 		while(!this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
 			try{
 				String s = this.generateNextGuess();
-				this.queue.put(new SingleGuess(s));
+				this.queue.put(new SingleGuess(s , this.generatorQueueName));
 				this.log.debug(this.toString() + " offered " + s);
 			} catch(InterruptedException e){
 				if(!this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD))

@@ -73,8 +73,18 @@ public abstract class ExecutionType {
 	public void addGuessObject(GuessObject guess) throws InterruptedException {
 		this.guessQueue.put(guess);
 	}
+	
+	protected SingleGuess getGuessByGeneratorName(String generatorName, SingleGuess[] guesses){
+		for(SingleGuess g : guesses){
+			if(g.getGeneratorName().equals(generatorName)){
+				return g;
+			}
+		}
+		return null;
+	}
+	
 	protected abstract void assignGeneratorNames();
-	public abstract GuessObject makeGuessObject(GeneratorInfo... gens) throws InterruptedException;
+	public abstract GuessObject makeGuessObject(GeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException;
 	protected abstract void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators);
 	protected abstract String formatCorrectGuesses(); 
 	public abstract String provideConsoleUpdate(GuessObject go);

@@ -77,8 +77,8 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 			e.printStackTrace();
 		}
 		
-		shutdown();
 		notifyDone();
+		shutdown();
 	}
 	
 	private void generateGuesses() throws InterruptedException{
@@ -103,7 +103,7 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 			if(index < maxIndex)
 				generateGuess(gens, index + 1, maxIndex, guesses);
 			else
-				this.exType.addGuessObject(this.exType.makeGuessObject(gens));
+				this.exType.addGuessObject(this.exType.makeGuessObject(gens, guesses));
 		}
 	}
 
@@ -119,10 +119,12 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	@Override
 	public void shutdown(){
 		try{
+			this.log.info("ProducerThreads shutdown");
+
 			this.notifier.haltThread(ThreadType.PRODUCER_THREAD);
 			this.exec.shutdown();
 			this.exType.clearCollector(this.collectionQueue);
-			this.exec.awaitTermination(10, TimeUnit.SECONDS);
+			this.exec.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
@@ -131,6 +133,7 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 				this.collectionQueue.get(s).clear();
 			}
 			this.notifier.haltThread(ThreadType.PRODUCER_MANAGEMENT);
+			this.log.info("ProducerThreads complete");
 		}
 	}
 	
