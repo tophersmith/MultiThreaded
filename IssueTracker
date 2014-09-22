@@ -1,8 +1,6 @@
 
 NEAR-TERM
-When there are more than the minimum producers, production ends early. 
-	Issue exists within the collectGuesses check
-	Probably move the iteration logic out into producermanagement
+Fix Iteration number output from always being 100000
 
 add comments and javadocs
 

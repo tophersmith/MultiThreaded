@@ -65,16 +65,46 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 			final int max = td.currentAlloc;
 			for(int i = 0; i < max; i++){
 				final int curThread = i;
+				td.gen.init(curThread, max, this.collectionQueue);
 				GeneratorInfo gen = td.gen.createNewInstance();
-				gen.init(curThread, max, this.collectionQueue);
 				this.exec.execute(gen);
 			}
 		}
-		//this is long running, it stops when there are no more guesses to generate
-		this.exType.collectGuesses(this.collectionQueue);
+		//this is long running, it stops when there are no more guesses to generate or the thread has been halted
+		try {
+			generateGuesses();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		shutdown();
 		notifyDone();
+	}
+	
+	private void generateGuesses() throws InterruptedException{
+		GeneratorInfo[] gens = this.exType.getGenerators();
+		SingleGuess[] guesses = new SingleGuess[gens.length];
+		generateGuess(gens, 0, gens.length - 1,  guesses);
+	}
+	
+	private void generateGuess(GeneratorInfo[] gens, int index, int maxIndex, SingleGuess[] guesses) throws InterruptedException{
+		GeneratorInfo g = gens[index];
+		BlockingQueue<SingleGuess> q = g.getQueue();
+		int numNulls = g.getTotalThreadNum();
+		while(!this.notifier.shouldHalt(ThreadType.PRODUCER_MANAGEMENT) || !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+			SingleGuess guess = q.take();
+			if(guess.toString() == null){
+				if(--numNulls == 0){
+					break;
+				}
+				continue;
+			}
+			guesses[index] = guess;
+			if(index < maxIndex)
+				generateGuess(gens, index + 1, maxIndex, guesses);
+			else
+				this.exType.addGuessObject(this.exType.makeGuessObject(gens));
+		}
 	}
 
 	@Override

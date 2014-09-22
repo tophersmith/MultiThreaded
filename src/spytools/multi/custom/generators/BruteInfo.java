@@ -31,8 +31,7 @@ public class BruteInfo extends GeneratorInfo {
 	}
 	
 	@Override
-	public void init(int threadNum, int totalThreads, Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
-		super.init(threadNum, totalThreads, collectionQueue);
+	protected void initializeInfo() {
 		resetCounter();
 	}
 	

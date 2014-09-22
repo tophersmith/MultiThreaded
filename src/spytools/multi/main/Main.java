@@ -11,8 +11,8 @@ public class Main {
 
 	
 	public static void main(String[] s) throws SetupException{
-		GeneratorInfo b1 = new BruteInfo(0, 2, "123");
-		GeneratorInfo b2 = new BruteInfo(0, 2, "123");
+		GeneratorInfo b1 = new BruteInfo(5, 5, "smitc");
+		GeneratorInfo b2 = new BruteInfo(5, 5, "rules");
 		ExecutionType t = new HashCode(1316888554);
 		t.addGenerators(b1, b2);
 		MultiThreadExec mte = new MultiThreadExec(t, 4);

@@ -74,7 +74,7 @@ public abstract class ExecutionType {
 		this.guessQueue.put(guess);
 	}
 	protected abstract void assignGeneratorNames();
-	public abstract void collectGuesses(Map<String, BlockingQueue<SingleGuess>> collectionQueue);
+	public abstract GuessObject makeGuessObject(GeneratorInfo... gens) throws InterruptedException;
 	protected abstract void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators);
 	protected abstract String formatCorrectGuesses(); 
 	public abstract String provideConsoleUpdate(GuessObject go);

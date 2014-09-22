@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.custom.storage.GuessObject;
 import spytools.multi.custom.storage.HashCodeStorage;
 import spytools.multi.helpers.SingleGuess;
@@ -13,6 +14,8 @@ public class HashCode extends ExecutionType{
 	private static final boolean stopOnFirst = false;
 	private String userQueueName = "USER";
 	private String passQueueName = "PASS";
+	private BlockingQueue<SingleGuess> userQ;
+	private BlockingQueue<SingleGuess> passQ;
 	final int target;
 	
 	public HashCode(int target){
@@ -28,32 +31,17 @@ public class HashCode extends ExecutionType{
 	
 	@Override
 	protected void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators){
-		generatorQueues.put(this.userQueueName, new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
-		generatorQueues.put(this.passQueueName, new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators));
+		this.userQ = new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators);
+		generatorQueues.put(this.userQueueName, this.userQ);
+		this.passQ = new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators);
+		generatorQueues.put(this.passQueueName, this.passQ);
 	}
 
 	@Override
-	public void collectGuesses(Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
-		String u = "";
-		String p = "";
-		try {
-			//Thread.sleep(5000);
-			BlockingQueue<SingleGuess> user = collectionQueue.get(this.userQueueName);
-			BlockingQueue<SingleGuess> pass = collectionQueue.get(this.passQueueName);
-			
-			while((u = user.take().toString()) != null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
-				while((p = pass.take().toString())!= null && !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
-					super.addGuessObject(new HashCodeStorage(u, p));
-					this.log.debug(this.toString() + " put " + u + ":" + p);
-				}
-			}
-		} catch (InterruptedException e) {
-			if(!this.notifier.shouldHalt(ThreadType.CONSUMER_THREAD)){
-				e.printStackTrace();
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+	public GuessObject makeGuessObject(GeneratorInfo... gens) throws InterruptedException {
+		String u = gens[0].getQueue().take().toString();
+		String p = gens[1].getQueue().take().toString();
+		return new HashCodeStorage(u, p);
 	}
 	
 

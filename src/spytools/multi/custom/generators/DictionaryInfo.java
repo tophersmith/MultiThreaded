@@ -70,4 +70,10 @@ public class DictionaryInfo extends GeneratorInfo{
 	public String toString(){
 		return "DictionaryProducerThread-" + this.threadNum;
 	}
+
+	@Override
+	protected void initializeInfo() {
+		// TODO Auto-generated method stub
+		
+	}
 }
