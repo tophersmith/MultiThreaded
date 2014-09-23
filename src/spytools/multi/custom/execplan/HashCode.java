@@ -24,9 +24,9 @@ public class HashCode extends ExecutionType{
 	}
 	
 	@Override
-	protected void assignGeneratorNames(){
-		this.generators[0].setGeneratorName(this.userQueueName);
-		this.generators[1].setGeneratorName(this.passQueueName);
+	protected void assignGeneratorNames(GeneratorInfo[] gens){
+		gens[0].setGeneratorName(this.userQueueName);
+		gens[1].setGeneratorName(this.passQueueName);
 	}
 	
 	@Override

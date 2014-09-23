@@ -47,7 +47,7 @@ public class ConsumerThread implements Runnable{
 				
 				GuessObject go = this.queue.take();
 				
-				this.log.warning(this.toString() + " taken " + go.toString());
+				this.log.debug(this.toString() + " taken " + go.toString());
 				if(this.exConsume.isCorrect(go)){
 					this.exType.storeCorrectGuess(go);
 					if(this.exType.stopOnFirstCorrectGuess()){

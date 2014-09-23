@@ -14,11 +14,6 @@ public class DictionaryInfo extends GeneratorInfo{
 	
 	public DictionaryInfo(File dict){
 		this.dictionaryFile = dict;
-		try {
-			this.reader = new BufferedReader(new FileReader(this.dictionaryFile));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		this.currentGuess = null;
 	}
 	
@@ -50,11 +45,6 @@ public class DictionaryInfo extends GeneratorInfo{
 		}
 	}
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	public String toString(){
@@ -63,7 +53,6 @@ public class DictionaryInfo extends GeneratorInfo{
 
 	@Override
 	protected void initializeInfo() {
-		// TODO Auto-generated method stub
-		
+		resetReader();
 	}
 }

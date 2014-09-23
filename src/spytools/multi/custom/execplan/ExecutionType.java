@@ -32,7 +32,7 @@ public abstract class ExecutionType {
 
 	public void addGenerators(GeneratorInfo... gen) {
 		this.generators = gen;
-		assignGeneratorNames();
+		assignGeneratorNames(this.generators);
 	}
 
 	public Map<String, BlockingQueue<SingleGuess>> generateQueues(int generators) {
@@ -83,7 +83,7 @@ public abstract class ExecutionType {
 		return null;
 	}
 	
-	protected abstract void assignGeneratorNames();
+	protected abstract void assignGeneratorNames(GeneratorInfo[] generators2);
 	public abstract GuessObject makeGuessObject(GeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException;
 	protected abstract void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators);
 	protected abstract String formatCorrectGuesses(); 

@@ -17,8 +17,7 @@ public class Main {
 		//GeneratorInfo b1 = new BruteInfo(1, 5, "smitc");
 		//GeneratorInfo b2 = new BruteInfo(1, 5, "rules");
 		ExecutionType t = new HashCode(1316888554);
-		t.addGenerators(b1, b2);
-		MultiThreadExec mte = new MultiThreadExec(t, 4);
+		MultiThreadExec mte = new MultiThreadExec(t, b1, b2);
 		mte.execute();
 	}
 	//1316888554 smitc/rules

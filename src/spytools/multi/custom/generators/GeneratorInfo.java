@@ -14,8 +14,8 @@ public abstract class GeneratorInfo implements Runnable{
 	BlockingQueue<SingleGuess> queue;
 	int threadNum;
 	BigInteger bigThreadNum;
-	int totalThreadNum;
-	BigInteger bigTotalThreadNum;
+	int allocatedThreads;
+	BigInteger bigAllocThreadNum;
 	String threadName;
 	
 	protected final Logger log = new Logger();
@@ -24,8 +24,8 @@ public abstract class GeneratorInfo implements Runnable{
 	public void init(int threadNum, int totalThreads, Map<String, BlockingQueue<SingleGuess>> collectionQueue) {
 		this.threadNum = threadNum;
 		this.bigThreadNum = BigInteger.valueOf(this.threadNum);
-		this.totalThreadNum = totalThreads;
-		this.bigTotalThreadNum = BigInteger.valueOf(this.totalThreadNum);
+		this.allocatedThreads = totalThreads;
+		this.bigAllocThreadNum = BigInteger.valueOf(this.allocatedThreads);
 		this.threadName = "Thread-" + this.threadNum;
 		this.queue = collectionQueue.get(this.generatorQueueName);
 		initializeInfo();
@@ -52,8 +52,9 @@ public abstract class GeneratorInfo implements Runnable{
 	public BlockingQueue<SingleGuess> getQueue(){
 		return this.queue;
 	}
+	
 	public int getTotalThreadNum(){
-		return this.totalThreadNum;
+		return this.allocatedThreads;
 	}
 	
 	public void setGeneratorName(String name) {

@@ -2,6 +2,7 @@ package spytools.multi.helpers;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import spytools.multi.types.CharSetType;
@@ -80,15 +81,21 @@ public class Helpers {
 	}
 	
 	public static char[] generateCharSet(Object charSet){
+		char[] ret;
 		if(charSet instanceof String){
-			return generateCharSets((String) charSet);
+			ret = generateCharSets((String) charSet);
 		}
-		if(charSet instanceof CharSetType){
-			return generateCharSets((CharSetType)charSet);
+		else if(charSet instanceof CharSetType){
+			ret = generateCharSets((CharSetType)charSet);
 		}
-		if(charSet instanceof char[])
-			return (char[]) charSet;
-		return generateCharSets((CharSetType[])charSet);
+		else if(charSet instanceof char[]){
+			ret = (char[]) charSet;
+		}
+		else{
+			ret = generateCharSets((CharSetType[])charSet);
+		}
+		Arrays.sort(ret);
+		return ret;
 	}
 	
 	public static char[] generateCharSets(CharSetType... ts){
@@ -101,6 +108,7 @@ public class Helpers {
 		for (int i = 0; i < cl.size(); i++){
 			retc[i] = cl.get(i);
 		}
+
 		return retc;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import spytools.multi.custom.execplan.ExecutionType;
+import spytools.multi.custom.generators.GeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
@@ -19,8 +20,12 @@ public class MultiThreadExec {
 	
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
-	public MultiThreadExec(ExecutionType exType, int suggestProducers) throws SetupException{
+	
+	
+	
+	private MultiThreadExec(ExecutionType exType, int suggestProducers, GeneratorInfo... gens) throws SetupException{
 		this.exType = exType;
+		this.exType.addGenerators(gens);
 		this.threadsAvail = Runtime.getRuntime().availableProcessors();
 		int minProducers = ProducerManagement.determineNeededThreads(exType.getGenerators());
 		int producers = suggestProducers == 0 ? this.threadsAvail/2 : suggestProducers;
@@ -39,8 +44,9 @@ public class MultiThreadExec {
 		this.cThread = new ConsumerManagement(exType, this.threadsAvail);
 		this.exec = Executors.newFixedThreadPool(2);
 	}
-	public MultiThreadExec(ExecutionType exType) throws SetupException{
-		this(exType, 0);
+	
+	public MultiThreadExec(ExecutionType exType, GeneratorInfo... gens) throws SetupException{
+		this(exType, 0, gens);
 	}
 	
 	public void execute(){

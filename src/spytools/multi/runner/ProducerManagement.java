@@ -59,12 +59,13 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	
 	@Override
 	public void run() {
-		int i = 0;
 		for(GeneratorInfo gen : this.gens){
-			final int curThread = i;
-			gen.init(curThread, this.numProducerThreads, this.collectionQueue);
-			this.exec.execute(gen);
-			i++;
+			final int allocThreads = gen.getNeededThreads();
+			for(int i = 0; i < allocThreads; i++){
+				final int curThread = i;
+				gen.init(curThread, gen.getNeededThreads(), this.collectionQueue);
+				this.exec.execute(gen);
+			}
 		}
 		//this is long running, it stops when there are no more guesses to generate or the thread has been halted
 		try {

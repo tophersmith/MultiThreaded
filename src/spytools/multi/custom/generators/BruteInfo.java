@@ -44,7 +44,7 @@ public class BruteInfo extends GeneratorInfo {
 			return null; 
 		}
 		this.currentGuess = Helpers.stringifyCharArray(Helpers.createCharArray(this.currentGuessNum, this.charSet));
-		this.currentGuessNum = this.currentGuessNum.add(this.bigTotalThreadNum);
+		this.currentGuessNum = this.currentGuessNum.add(this.bigAllocThreadNum);
 		return this.currentGuess;
 	}
 	
