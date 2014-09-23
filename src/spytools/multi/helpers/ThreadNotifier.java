@@ -11,17 +11,14 @@ public class ThreadNotifier {
 		return inst;
 	}
 
-	public enum ThreadType{MAIN, CONSUMER_MANAGEMENT, PRODUCER_MANAGEMENT, CONSUMER_THREAD, PRODUCER_THREAD}
+	public enum ThreadType{MAIN, CONSUMERS, PRODUCERS}
 
 	private static enum ThreadInfo{
 		MAIN(ThreadType.MAIN),
-		CON_MGT(ThreadType.CONSUMER_MANAGEMENT),
-		PRO_MGT(ThreadType.PRODUCER_MANAGEMENT),
-		CON_THD(ThreadType.CONSUMER_THREAD),
-		PRO_THD(ThreadType.PRODUCER_THREAD);
+		CONS(ThreadType.CONSUMERS),
+		PROS(ThreadType.PRODUCERS);
 		private ThreadType type;
 		private volatile boolean halt = false;
-		private volatile boolean done = false;
 		ThreadInfo(ThreadType t){
 			this.type = t;
 		}
@@ -33,12 +30,6 @@ public class ThreadNotifier {
 		}
 		public void halt(){
 			this.halt = true;
-		}
-		public boolean isDone(){
-			return this.done;
-		}
-		public void done(){
-			this.done = true;
 		}
 	}
 
@@ -62,13 +53,5 @@ public class ThreadNotifier {
 
 	public void haltThread(ThreadType t){
 		getInfo(t).halt();
-	}
-	
-	public boolean isDone(ThreadType t){
-		return getInfo(t).isDone();
-	}
-	
-	public void setDone(ThreadType t){
-		getInfo(t).done();
 	}
 }

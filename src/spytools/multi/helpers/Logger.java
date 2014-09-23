@@ -37,6 +37,13 @@ public class Logger {
 			printMessage("ERROR", message);
 		}
 	}
+	
+	private static final Object foundLock = new Object();
+	public void found(String message) {
+		synchronized(foundLock){
+			printMessage("FOUND", message);
+		}
+	}
 
 	private static void printMessage(String type, String message){
 		System.out.println(type + ": " + getTime() + " " + message);

@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.execplan.AbstractExecutionPlan;
-import spytools.multi.custom.execplan.consumer.AbstractExecutionConsumer;
 import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.custom.generators.BruteGenerator;
 import spytools.multi.custom.generators.DictionaryGenerator;
-import spytools.multi.custom.storage.AbstractGuessObject;
+import spytools.multi.execplan.AbstractExecutionPlan;
+import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
 import spytools.multi.helpers.SingleGuess;
+import spytools.multi.storage.AbstractGuessObject;
 import spytools.multi.types.CharSetType;
 
 public class Setup {

@@ -4,13 +4,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import spytools.multi.custom.execplan.AbstractExecutionPlan;
 import spytools.multi.custom.generators.AbstractGeneratorInfo;
+import spytools.multi.execplan.AbstractExecutionPlan;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-
+/**
+ * Main entrypoint for execution
+ * 
+ * handles creation/dispatching to producer/consumer management threads
+ * 
+ * @author smitc
+ */
 public class MultiThreadExec {
 	private final AbstractExecutionPlan exType;
 	private final ProducerManagement pThread;
@@ -19,8 +25,6 @@ public class MultiThreadExec {
 	private final ExecutorService exec;
 	
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
-	
-	
 	
 	
 	private MultiThreadExec(AbstractExecutionPlan exType, int suggestProducers, AbstractGeneratorInfo... gens) throws SetupException{
@@ -53,8 +57,8 @@ public class MultiThreadExec {
 		long startTime = System.nanoTime();
 		this.exec.execute(this.pThread);
 		this.exec.execute(this.cThread);
-		while(!this.notifier.shouldHalt(ThreadType.MAIN)){
-			if(this.notifier.isDone(ThreadType.PRODUCER_MANAGEMENT) && this.notifier.isDone(ThreadType.CONSUMER_MANAGEMENT)){
+		while(!this.notifier.shouldHalt(ThreadType.MAIN)){//while this thread shouldn't stop
+			if(this.notifier.shouldHalt(ThreadType.PRODUCERS) && this.notifier.shouldHalt(ThreadType.CONSUMERS)){//but if these threads should stop
 				this.notifier.haltThread(ThreadType.MAIN);
 			}
 		}
@@ -71,9 +75,9 @@ public class MultiThreadExec {
 	private void shutdownAll(){
 		this.notifier.haltAll();
 		
-		if(!this.notifier.isDone(ThreadType.PRODUCER_MANAGEMENT) || !this.notifier.isDone(ThreadType.PRODUCER_THREAD))
+		if(!this.notifier.shouldHalt(ThreadType.PRODUCERS))
 			shutdownManagement(this.pThread);
-		if(!this.notifier.isDone(ThreadType.CONSUMER_MANAGEMENT) || !this.notifier.isDone(ThreadType.CONSUMER_THREAD))
+		if(!this.notifier.shouldHalt(ThreadType.CONSUMERS))
 			shutdownManagement(this.cThread);
 		
 		try{
@@ -83,7 +87,6 @@ public class MultiThreadExec {
 			e.printStackTrace();
 		} finally{
 			this.exec.shutdownNow();
-			this.notifier.setDone(ThreadType.MAIN);
 		}
 	}
 	

@@ -33,19 +33,19 @@ public abstract class AbstractGeneratorInfo implements Runnable{
 	
 	@Override
 	public void run(){
-		while(!this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){
+		while(!this.notifier.shouldHalt(ThreadType.PRODUCERS)){
 			try{
 				String s = this.generateNextGuess();
 				this.queue.put(new SingleGuess(s , this.generatorQueueName));
 				this.log.debug(this.toString() + " offered " + s);
 			} catch(InterruptedException e){
-				if(!this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD))
+				if(!this.notifier.shouldHalt(ThreadType.PRODUCERS))
 					e.printStackTrace();
 			} catch(Exception e){
 				e.printStackTrace();
 			}
 		}
-		if(this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD))
+		if(this.notifier.shouldHalt(ThreadType.PRODUCERS))
 			this.queue.clear();
 	}
 	

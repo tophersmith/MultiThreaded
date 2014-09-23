@@ -1,15 +1,16 @@
-package spytools.multi.custom.execplan;
+package spytools.multi.execplan.custom;
 
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.execplan.consumer.AbstractExecutionConsumer;
-import spytools.multi.custom.execplan.consumer.HashCodeConsumer;
 import spytools.multi.custom.generators.AbstractGeneratorInfo;
-import spytools.multi.custom.storage.AbstractGuessObject;
-import spytools.multi.custom.storage.HashCodeStorage;
+import spytools.multi.execplan.AbstractExecutionPlan;
+import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
+import spytools.multi.execplan.consumer.custom.HashCodeConsumer;
 import spytools.multi.helpers.SingleGuess;
+import spytools.multi.storage.AbstractGuessObject;
+import spytools.multi.storage.custom.UserPassStorage;
 
 public class HashCode extends AbstractExecutionPlan{
 	private static final boolean stopOnFirst = false;
@@ -43,19 +44,18 @@ public class HashCode extends AbstractExecutionPlan{
 		if(!(gens.length == 2 && guesses.length == 2)){
 			//TODO throw Exception
 			System.out.println("FAIL");
-			return new HashCodeStorage("","");
+			return new UserPassStorage("","");
 		}
 		String user = getGuessByGeneratorName(this.userQueueName, guesses).toString();
 		String pass = getGuessByGeneratorName(this.passQueueName, guesses).toString();
-		System.out.println(user + ":" + pass);
-		return new HashCodeStorage(user, pass);
+		return new UserPassStorage(user, pass);
 	}
 	
 
 	@Override
 	public String provideConsoleUpdate(AbstractGuessObject go){
-		if(go instanceof HashCodeStorage){
-			return ((HashCodeStorage)go).toString();
+		if(go instanceof UserPassStorage){
+			return ((UserPassStorage)go).toString();
 		}
 		return "";
 	}

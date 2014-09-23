@@ -1,4 +1,4 @@
-package spytools.multi.custom.execplan;
+package spytools.multi.execplan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.execplan.consumer.AbstractExecutionConsumer;
 import spytools.multi.custom.generators.AbstractGeneratorInfo;
-import spytools.multi.custom.storage.AbstractGuessObject;
+import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
+import spytools.multi.storage.AbstractGuessObject;
 
 public abstract class AbstractExecutionPlan {
 	private final boolean stopOnFirstCorrect;

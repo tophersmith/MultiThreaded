@@ -1,6 +1,8 @@
-package spytools.multi.custom.execplan.consumer;
+package spytools.multi.execplan.consumer.custom;
 
-import spytools.multi.custom.storage.HashCodeStorage;
+import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
+import spytools.multi.storage.custom.UserPassStorage;
+
 
 public class HashCodeConsumer extends AbstractExecutionConsumer{
 	private int target;
@@ -11,10 +13,10 @@ public class HashCodeConsumer extends AbstractExecutionConsumer{
 	
 	@Override
 	public boolean isCorrect(Object guess){
-		if(guess instanceof HashCodeStorage){
+		if(guess instanceof UserPassStorage){
 			boolean isGood = false;
-			String user = ((HashCodeStorage) guess).getUser();
-			String pass = ((HashCodeStorage) guess).getPass();
+			String user = ((UserPassStorage) guess).getUser();
+			String pass = ((UserPassStorage) guess).getPass();
 			
 			int test = 0;
 			test += getHash("UserIdentifier", user);

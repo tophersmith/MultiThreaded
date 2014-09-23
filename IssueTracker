@@ -8,6 +8,8 @@ brute generator is stupidly slow
 	try to avoid touching BigInteger
 	need to have a way to say guess the next x guesses (AtomicLong?)
 
+revamp class structure/finalize members/check access allowances
+
 JUnit Tests **STARTED**
 
 yourkit tests like mad
@@ -16,7 +18,6 @@ yourkit tests like mad
 static string/character generator. e.g. hashcat's $1="HELLO" $2={a,b,c} generate($1$2) = HELLOa, HELLOb, HELLOc etc
 	Prefix/suffix generator that overrides the generate next, pre-/ap-pends the value, still lets other generators do work
 
-revamp class structure
 
 
 DISTRIBUTED
