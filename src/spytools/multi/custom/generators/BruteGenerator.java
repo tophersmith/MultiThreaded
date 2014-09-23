@@ -1,13 +1,10 @@
 package spytools.multi.custom.generators;
 
 import java.math.BigInteger;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 
 import spytools.multi.helpers.Helpers;
-import spytools.multi.helpers.SingleGuess;
 
-public class BruteInfo extends GeneratorInfo {
+public class BruteGenerator extends AbstractGeneratorInfo {
 	private final int minLength;
 	private final BigInteger min;
 	private final int maxLength;
@@ -17,7 +14,7 @@ public class BruteInfo extends GeneratorInfo {
 	private BigInteger currentGuessNum = null;
 	private String currentGuess;
 	
-	public BruteInfo(int min, int max, Object charSet){
+	public BruteGenerator(int min, int max, Object charSet){
 		this.charSet = Helpers.generateCharSet(charSet);
 		this.minLength = min;
 		this.min = Helpers.findGuessValueFromLength(this.minLength, this.charSet);

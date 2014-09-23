@@ -1,20 +1,17 @@
 package spytools.multi.runner;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import spytools.multi.custom.execplan.ExecutionType;
+import spytools.multi.custom.execplan.AbstractExecutionPlan;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-public class ConsumerManagement extends ManagementThread implements Runnable{
-	private ExecutionType exType;
+public class ConsumerManagement extends AbstractManagementThread implements Runnable{
+	private AbstractExecutionPlan exType;
 	private int consumerThreads;
 	private ExecutorService exec; //manages sub threads
 	
@@ -22,7 +19,7 @@ public class ConsumerManagement extends ManagementThread implements Runnable{
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 	private final AtomicLong counter;
 	
-	public ConsumerManagement(ExecutionType exType, int consumerThreads){
+	public ConsumerManagement(AbstractExecutionPlan exType, int consumerThreads){
 		this.exType = exType;
 		this.consumerThreads = consumerThreads;
 		this.exec = Executors.newFixedThreadPool(consumerThreads);

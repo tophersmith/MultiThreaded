@@ -7,12 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-public class DictionaryInfo extends GeneratorInfo{
+public class DictionaryGenerator extends AbstractGeneratorInfo{
 	private File dictionaryFile;
 	private BufferedReader reader;
 	private String currentGuess;
 	
-	public DictionaryInfo(File dict){
+	public DictionaryGenerator(File dict){
 		this.dictionaryFile = dict;
 		this.currentGuess = null;
 	}

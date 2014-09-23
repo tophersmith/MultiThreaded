@@ -8,17 +8,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import spytools.multi.custom.execplan.ExecutionType;
-import spytools.multi.custom.generators.GeneratorInfo;
+import spytools.multi.custom.execplan.AbstractExecutionPlan;
+import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-public class ProducerManagement extends ManagementThread implements Runnable{
-	private ExecutionType exType;
-	private List<GeneratorInfo> gens;
+public class ProducerManagement extends AbstractManagementThread implements Runnable{
+	private AbstractExecutionPlan exType;
+	private List<AbstractGeneratorInfo> gens;
 	private Map<String, BlockingQueue <SingleGuess>> collectionQueue;
 	
 	private int numProducerThreads;
@@ -29,10 +29,10 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	private final Logger log = new Logger();
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
-	public ProducerManagement(ExecutionType exType, int producerThreads, GeneratorInfo... gen) throws SetupException{
+	public ProducerManagement(AbstractExecutionPlan exType, int producerThreads, AbstractGeneratorInfo... gen) throws SetupException{
 		this.exType = exType;
-		this.gens = new ArrayList<GeneratorInfo>();
-		for(GeneratorInfo g : gen){
+		this.gens = new ArrayList<AbstractGeneratorInfo>();
+		for(AbstractGeneratorInfo g : gen){
 			this.gens.add(g);
 		}
 		
@@ -45,9 +45,9 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 		this.exec = Executors.newFixedThreadPool(this.numProducerThreads);
 	}
 	
-	public static int determineNeededThreads(GeneratorInfo... gen){
+	public static int determineNeededThreads(AbstractGeneratorInfo... gen){
 		int neededThreads = 0;
-		for(GeneratorInfo g : gen){
+		for(AbstractGeneratorInfo g : gen){
 			neededThreads += g.getNeededThreads();
 		}
 		return neededThreads;
@@ -59,7 +59,7 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	
 	@Override
 	public void run() {
-		for(GeneratorInfo gen : this.gens){
+		for(AbstractGeneratorInfo gen : this.gens){
 			final int allocThreads = gen.getNeededThreads();
 			for(int i = 0; i < allocThreads; i++){
 				final int curThread = i;
@@ -79,13 +79,13 @@ public class ProducerManagement extends ManagementThread implements Runnable{
 	}
 	
 	private void generateGuesses() throws InterruptedException{
-		GeneratorInfo[] gens = this.exType.getGenerators();
+		AbstractGeneratorInfo[] gens = this.exType.getGenerators();
 		SingleGuess[] guesses = new SingleGuess[gens.length];
 		generateGuess(gens, 0, gens.length - 1,  guesses);
 	}
 	
-	private void generateGuess(GeneratorInfo[] gens, int index, int maxIndex, SingleGuess[] guesses) throws InterruptedException{
-		GeneratorInfo g = gens[index];
+	private void generateGuess(AbstractGeneratorInfo[] gens, int index, int maxIndex, SingleGuess[] guesses) throws InterruptedException{
+		AbstractGeneratorInfo g = gens[index];
 		BlockingQueue<SingleGuess> q = g.getQueue();
 		int numNulls = g.getTotalThreadNum();
 		while(!this.notifier.shouldHalt(ThreadType.PRODUCER_MANAGEMENT) || !this.notifier.shouldHalt(ThreadType.PRODUCER_THREAD)){

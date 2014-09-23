@@ -4,15 +4,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import spytools.multi.custom.execplan.ExecutionType;
-import spytools.multi.custom.generators.GeneratorInfo;
+import spytools.multi.custom.execplan.AbstractExecutionPlan;
+import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
 
 public class MultiThreadExec {
-	private final ExecutionType exType;
+	private final AbstractExecutionPlan exType;
 	private final ProducerManagement pThread;
 	private final ConsumerManagement cThread;
 	private int threadsAvail;
@@ -23,7 +23,7 @@ public class MultiThreadExec {
 	
 	
 	
-	private MultiThreadExec(ExecutionType exType, int suggestProducers, GeneratorInfo... gens) throws SetupException{
+	private MultiThreadExec(AbstractExecutionPlan exType, int suggestProducers, AbstractGeneratorInfo... gens) throws SetupException{
 		this.exType = exType;
 		this.exType.addGenerators(gens);
 		this.threadsAvail = Runtime.getRuntime().availableProcessors();
@@ -45,7 +45,7 @@ public class MultiThreadExec {
 		this.exec = Executors.newFixedThreadPool(2);
 	}
 	
-	public MultiThreadExec(ExecutionType exType, GeneratorInfo... gens) throws SetupException{
+	public MultiThreadExec(AbstractExecutionPlan exType, AbstractGeneratorInfo... gens) throws SetupException{
 		this(exType, 0, gens);
 	}
 	
@@ -64,7 +64,7 @@ public class MultiThreadExec {
 		System.out.println("Time: " + ((System.nanoTime()-startTime)/1000000000.0));
 	}
 	
-	private static void shutdownManagement(ManagementThread mgtThread) {
+	private static void shutdownManagement(AbstractManagementThread mgtThread) {
 		mgtThread.shutdown();
 	}
 	

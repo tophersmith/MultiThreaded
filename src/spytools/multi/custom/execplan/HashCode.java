@@ -4,13 +4,14 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.generators.GeneratorInfo;
-import spytools.multi.custom.storage.GuessObject;
+import spytools.multi.custom.execplan.consumer.AbstractExecutionConsumer;
+import spytools.multi.custom.execplan.consumer.HashCodeConsumer;
+import spytools.multi.custom.generators.AbstractGeneratorInfo;
+import spytools.multi.custom.storage.AbstractGuessObject;
 import spytools.multi.custom.storage.HashCodeStorage;
 import spytools.multi.helpers.SingleGuess;
-import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-public class HashCode extends ExecutionType{
+public class HashCode extends AbstractExecutionPlan{
 	private static final boolean stopOnFirst = false;
 	private String userQueueName = "USER";
 	private String passQueueName = "PASS";
@@ -24,21 +25,21 @@ public class HashCode extends ExecutionType{
 	}
 	
 	@Override
-	protected void assignGeneratorNames(GeneratorInfo[] gens){
+	protected void assignGeneratorNames(AbstractGeneratorInfo[] gens){
 		gens[0].setGeneratorName(this.userQueueName);
 		gens[1].setGeneratorName(this.passQueueName);
 	}
 	
 	@Override
 	protected void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators){
-		this.userQ = new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators);
+		this.userQ = new ArrayBlockingQueue<SingleGuess>(AbstractExecutionPlan.MAX_GENERATOR_QUEUE_SIZE/generators);
 		generatorQueues.put(this.userQueueName, this.userQ);
-		this.passQ = new ArrayBlockingQueue<SingleGuess>(ExecutionType.MAX_GENERATOR_QUEUE_SIZE/generators);
+		this.passQ = new ArrayBlockingQueue<SingleGuess>(AbstractExecutionPlan.MAX_GENERATOR_QUEUE_SIZE/generators);
 		generatorQueues.put(this.passQueueName, this.passQ);
 	}
 
 	@Override
-	public GuessObject makeGuessObject(GeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException {
+	public AbstractGuessObject makeGuessObject(AbstractGeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException {
 		if(!(gens.length == 2 && guesses.length == 2)){
 			//TODO throw Exception
 			System.out.println("FAIL");
@@ -52,7 +53,7 @@ public class HashCode extends ExecutionType{
 	
 
 	@Override
-	public String provideConsoleUpdate(GuessObject go){
+	public String provideConsoleUpdate(AbstractGuessObject go){
 		if(go instanceof HashCodeStorage){
 			return ((HashCodeStorage)go).toString();
 		}
@@ -62,56 +63,14 @@ public class HashCode extends ExecutionType{
 	@Override
 	public String formatCorrectGuesses(){
 		StringBuilder sb = new StringBuilder();
-		for(GuessObject go : this.correctGuesses){
+		for(AbstractGuessObject go : this.correctGuesses){
 			sb.append(go.toString() + '\n');
 		}
 		return sb.toString();
 	}
 	
 	@Override
-	public ExecutionConsumer getConsumer(){
-		return new HashCodeConsumer();
-	}
-	
-	
-	
-	
-	class HashCodeConsumer extends ExecutionConsumer{
-		int target;
-		
-		HashCodeConsumer(){
-			this.target = HashCode.this.target;
-		}
-		
-		@Override
-		public boolean isCorrect(Object guess){
-			if(guess instanceof HashCodeStorage){
-				boolean isGood = false;
-				String user = ((HashCodeStorage) guess).getUser();
-				String pass = ((HashCodeStorage) guess).getPass();
-				
-				int test = 0;
-				test += getHash("UserIdentifier", user);
-				test += getHash("Password", pass);
-				isGood = test == this.target;
-				
-				test += getHash("Old password", "");
-				isGood = (isGood) || (test == this.target);
-
-				return isGood;
-				
-			}
-			return false;
-		}
-		
-		private int getHash(String key, String value){
-			 return (key==null   ? 0 : key.hashCode()) ^
-	                (value==null ? 0 : value.hashCode());
-		}
-	
-		@Override
-		public void reset() {
-			//unnecessary. I clean up internally
-		}
+	public AbstractExecutionConsumer getConsumer(){
+		return new HashCodeConsumer(this.target);
 	}
 }

@@ -1,6 +1,4 @@
-
 NEAR-TERM
-
 add comments and javadocs
 
 add better logger use/exceptions
@@ -8,9 +6,7 @@ add better logger use/exceptions
 brute generator is stupidly slow
 	just use char array, previous guess + max producertype thread, use the charSet as boundaries.
 	try to avoid touching BigInteger
-	need to have a way to say guess the next x guesses
-
-test dictionary generator
+	need to have a way to say guess the next x guesses (AtomicLong?)
 
 JUnit Tests **STARTED**
 
@@ -20,6 +16,7 @@ yourkit tests like mad
 static string/character generator. e.g. hashcat's $1="HELLO" $2={a,b,c} generate($1$2) = HELLOa, HELLOb, HELLOc etc
 	Prefix/suffix generator that overrides the generate next, pre-/ap-pends the value, still lets other generators do work
 
+revamp class structure
 
 
 DISTRIBUTED
@@ -38,7 +35,6 @@ build server support for adding new clients
 support sending potentially large files
 	and message passing for too large for filesystem
 	and cleanup (hash of file to check how long to keep)
-
 
 
 WISHLIST

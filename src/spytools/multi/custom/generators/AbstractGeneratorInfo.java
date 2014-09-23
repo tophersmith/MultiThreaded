@@ -9,7 +9,7 @@ import spytools.multi.helpers.SingleGuess;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
-public abstract class GeneratorInfo implements Runnable{
+public abstract class AbstractGeneratorInfo implements Runnable{
 	String generatorQueueName;
 	BlockingQueue<SingleGuess> queue;
 	int threadNum;

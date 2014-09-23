@@ -3,21 +3,21 @@ package spytools.multi.runner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
-import spytools.multi.custom.execplan.ExecutionType;
-import spytools.multi.custom.execplan.ExecutionType.ExecutionConsumer;
-import spytools.multi.custom.storage.GuessObject;
+import spytools.multi.custom.execplan.AbstractExecutionPlan;
+import spytools.multi.custom.execplan.consumer.AbstractExecutionConsumer;
+import spytools.multi.custom.storage.AbstractGuessObject;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
 public class ConsumerThread implements Runnable{
-	private ExecutionType exType;
-	private ExecutionConsumer exConsume;
+	private AbstractExecutionPlan exType;
+	private AbstractExecutionConsumer exConsume;
 	
 	private int threadNum;
 	private int totalThreads;
 	
-	private BlockingQueue<GuessObject> queue;
+	private BlockingQueue<AbstractGuessObject> queue;
 	
 	private final AtomicLong counter;
 	private final long countMax = 100000;
@@ -26,7 +26,7 @@ public class ConsumerThread implements Runnable{
 
 	private volatile boolean done = false;
 	
-	public ConsumerThread(ExecutionType exType, int curThread, int totalThreads, AtomicLong counter){
+	public ConsumerThread(AbstractExecutionPlan exType, int curThread, int totalThreads, AtomicLong counter){
 		this.exType = exType;
 		this.exConsume = this.exType.getConsumer();
 		this.threadNum = curThread;
@@ -45,7 +45,7 @@ public class ConsumerThread implements Runnable{
 					this.log.debug(this.toString() + " reports empty guess queue");
 				}
 				
-				GuessObject go = this.queue.take();
+				AbstractGuessObject go = this.queue.take();
 				
 				this.log.debug(this.toString() + " taken " + go.toString());
 				if(this.exConsume.isCorrect(go)){

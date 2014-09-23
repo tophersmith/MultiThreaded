@@ -1,6 +1,6 @@
 package spytools.multi.custom.storage;
 
-public class HashCodeStorage extends GuessObject{
+public class HashCodeStorage extends AbstractGuessObject{
 	private String user;
 	private String pass;
 	
