@@ -3,6 +3,11 @@ package spytools.multi.helpers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * shared static logging mechanism
+ *  
+ * @author Chris
+ */
 public class Logger {
 
 	private static SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

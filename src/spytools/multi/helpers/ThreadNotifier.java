@@ -1,5 +1,11 @@
 package spytools.multi.helpers;
 
+
+/**
+ * allows passing notifications of thread status.
+ * 
+ * @author Chris
+ */
 public class ThreadNotifier {
 	private static ThreadNotifier inst = null;
 

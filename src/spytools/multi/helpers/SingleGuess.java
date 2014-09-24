@@ -1,9 +1,15 @@
 package spytools.multi.helpers;
 
+
+/**
+ * Contains a single object created by a Generator
+ *  
+ * @author Chris
+ */
 public class SingleGuess {
-	private String guess;
+	private Object guess;
 	private String generatedBy;
-	public SingleGuess(String guess, String generatedBy){
+	public SingleGuess(Object guess, String generatedBy){
 		this.guess = guess;
 		this.generatedBy = generatedBy;
 	}
@@ -12,6 +18,6 @@ public class SingleGuess {
 	}
 	@Override
 	public String toString(){
-		return this.guess;
+		return this.guess == null ? null : this.guess.toString();
 	}
 }

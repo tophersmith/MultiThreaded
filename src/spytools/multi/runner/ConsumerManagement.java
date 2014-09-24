@@ -10,14 +10,22 @@ import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
 
+/**
+ * ConsumerManagement handles all consumer threads
+ * It manages all consumer threads and delegates tasks to each
+ * 
+ * @author smitc
+ */
 public class ConsumerManagement extends AbstractManagementThread{
 	private AbstractExecutionPlan exType;
 	private int consumerThreads;
 	private ExecutorService exec; //manages sub threads
 	
+	//counter for each guess (increments once per guess across all threads)
+	private final AtomicLong counter;
+	
 	private final Logger log = new Logger();
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
-	private final AtomicLong counter;
 	
 	public ConsumerManagement(AbstractExecutionPlan exType, int consumerThreads){
 		this.exType = exType;
@@ -28,11 +36,9 @@ public class ConsumerManagement extends AbstractManagementThread{
 	
 	@Override
 	public void run() {
-		//List<ConsumerThread> threads = new ArrayList<ConsumerThread>();
 		for(int i = 0; i < this.consumerThreads; i++){
 			final int curThread = i;
 			ConsumerThread c = new ConsumerThread(this.exType, curThread, this.counter);
-			//threads.add(c);
 			this.exec.execute(c);
 		}
 		

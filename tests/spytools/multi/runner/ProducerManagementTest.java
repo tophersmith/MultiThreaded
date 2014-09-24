@@ -11,7 +11,6 @@ import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.custom.setup.Setup;
 import spytools.multi.execplan.AbstractExecutionPlan;
 import spytools.multi.helpers.SetupException;
-import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.storage.AbstractGuessObject;
 import spytools.multi.types.CharSetType;
 

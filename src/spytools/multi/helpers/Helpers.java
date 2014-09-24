@@ -66,7 +66,13 @@ public class Helpers {
 		return charArray;
 	}
 	
-
+	/**
+	 * generates the BigInteger value represented by the first guess given the length and sorted characterSet
+	 * 
+	 * @param length length of the first guess
+	 * @param charSet 
+	 * @return
+	 */
 	public static BigInteger findGuessValueFromLength(int length, char[] charSet){
 		if(length <= 1)
 			return BigInteger.ONE;
@@ -80,6 +86,12 @@ public class Helpers {
 		return guessValue;
 	}
 	
+	/**
+	 * given one of a few charset object options, generate a char array
+	 * 
+	 * @param charSet
+	 * @return
+	 */
 	public static char[] generateCharSet(Object charSet){
 		char[] ret;
 		if(charSet instanceof String){
@@ -98,7 +110,7 @@ public class Helpers {
 		return ret;
 	}
 	
-	public static char[] generateCharSets(CharSetType... ts){
+	private static char[] generateCharSets(CharSetType... ts){
 		List<Character> cl = new ArrayList<Character>();
 		for(CharSetType t : ts){
 			for(char c : t.getSet().toCharArray())
@@ -112,7 +124,7 @@ public class Helpers {
 		return retc;
 	}
 	
-	public static char[] generateCharSets(String s){
+	private static char[] generateCharSets(String s){
 		List<Character> cl = new ArrayList<Character>();
 		for(char c : s.toCharArray())
 			cl.add(c);
