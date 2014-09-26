@@ -10,6 +10,7 @@ import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
 import spytools.multi.generators.AbstractGeneratorInfo;
 import spytools.multi.generators.BruteGenerator;
 import spytools.multi.generators.DictionaryGenerator;
+import spytools.multi.generators.FastBruteGenerator;
 import spytools.multi.helpers.SingleGuess;
 import spytools.multi.storage.AbstractGuessObject;
 import spytools.multi.types.CharSetType;
@@ -63,7 +64,7 @@ public class Setup {
 		return setupBrute(0, 2, CharSetType.NUMBER);
 	}
 	public static AbstractGeneratorInfo setupBrute(int min, int max, Object charSet){
-		AbstractGeneratorInfo gi = new BruteGenerator(min, max, charSet);
+		AbstractGeneratorInfo gi = new FastBruteGenerator(min, max, charSet);
 		gi.setGeneratorName("TestGenerator");
 		AbstractExecutionPlan t = setupExecType();
 		gi.init(0, 1, t.generateQueues(1));
