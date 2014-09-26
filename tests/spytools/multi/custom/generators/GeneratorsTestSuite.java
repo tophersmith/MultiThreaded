@@ -7,5 +7,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ BruteInfoTest.class, DictionaryInfoTest.class })
 public class GeneratorsTestSuite {
-
+//test suite for generators
 }

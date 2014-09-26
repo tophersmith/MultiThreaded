@@ -1,4 +1,4 @@
-package spytools.multi.custom.generators;
+package spytools.multi.generators;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
+/**
+ * DictionaryGenerator uses a provided File to generate guesses
+ * 
+ * File objects may only be used once e.g. It is not possible to use two DictionaryGenerators with the same File
+ * 
+ * @author smitc
+ */
 public class DictionaryGenerator extends AbstractGeneratorInfo{
 	private File dictionaryFile;
 	private BufferedReader reader;
@@ -45,7 +51,6 @@ public class DictionaryGenerator extends AbstractGeneratorInfo{
 		}
 	}
 
-	
 	@Override
 	public String toString(){
 		return "DictionaryProducerThread-" + this.threadNum;

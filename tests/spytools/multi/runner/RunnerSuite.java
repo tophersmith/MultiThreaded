@@ -7,5 +7,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ ProducerManagementTest.class })
 public class RunnerSuite {
-
+//test suite for runners
 }

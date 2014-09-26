@@ -7,9 +7,9 @@ import java.util.concurrent.BlockingQueue;
 
 import org.junit.Test;
 
-import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.custom.setup.Setup;
 import spytools.multi.execplan.AbstractExecutionPlan;
+import spytools.multi.generators.AbstractGeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.storage.AbstractGuessObject;
 import spytools.multi.types.CharSetType;
@@ -21,7 +21,7 @@ public class ProducerManagementTest {
 		AbstractExecutionPlan t = Setup.setupExecType();
 		AbstractGeneratorInfo gi = Setup.setupBrute(0, 3, CharSetType.NUMBER);
 		t.addGenerators(gi);
-		AbstractManagementThread mt = new ProducerManagement(t, 1, gi);
+		AbstractManagementThread mt = new ProducerManagement(t, 1, Long.MAX_VALUE, gi);
 		mt.run();
 		BlockingQueue<AbstractGuessObject> q = t.getGuessQueue();
 		

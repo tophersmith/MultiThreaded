@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import spytools.multi.custom.setup.Setup;
+import spytools.multi.generators.AbstractGeneratorInfo;
 
 public class BruteInfoTest {
 

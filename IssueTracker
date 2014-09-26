@@ -1,6 +1,4 @@
 NEAR-TERM
-add comments and javadocs
-
 add better logger use/exceptions
 
 brute generator is stupidly slow
@@ -14,9 +12,6 @@ JUnit Tests **STARTED**
 
 yourkit tests like mad
 	should execution contexts come from a pool?
-
-static string/character generator. e.g. hashcat's $1="HELLO" $2={a,b,c} generate($1$2) = HELLOa, HELLOb, HELLOc etc
-	Prefix/suffix generator that overrides the generate next, pre-/ap-pends the value, still lets other generators do work
 
 
 

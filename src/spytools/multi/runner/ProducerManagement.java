@@ -7,9 +7,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
-import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.execplan.AbstractExecutionPlan;
+import spytools.multi.generators.AbstractGeneratorInfo;
 import spytools.multi.helpers.Logger;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.SingleGuess;
@@ -26,6 +27,7 @@ import spytools.multi.helpers.ThreadNotifier.ThreadType;
  * GuessObjects which is takes from and collects via the ExecutionPlan into one single 
  * guessQueue and provides that for ConsumerThreads.
  * 
+ * Producers make up to a certain number of defined guesses, or MAX_LONG if undefined
  * 
  * @author smitc
  */
@@ -45,10 +47,16 @@ public class ProducerManagement extends AbstractManagementThread{
 	//used if client tries to give more threads to producers than needed
 	private int unusedThreads;
 	
+	//maximum number of guesses to take before giving up
+	private long maxGuess;
+	
+	//current number of guesses taken thus far
+	private AtomicLong guessCount;
 	private final Logger log = new Logger();
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
-	public ProducerManagement(AbstractExecutionPlan exType, int producerThreads, AbstractGeneratorInfo... gen) throws SetupException{
+	
+	public ProducerManagement(AbstractExecutionPlan exType, int producerThreads, long maxGuess, AbstractGeneratorInfo... gen) throws SetupException{
 		this.exType = exType;
 		this.gens = new ArrayList<AbstractGeneratorInfo>();
 		for(AbstractGeneratorInfo g : gen){
@@ -61,11 +69,12 @@ public class ProducerManagement extends AbstractManagementThread{
 		
 		this.collectionQueue = exType.generateQueues(gen.length);
 		this.numProducerThreads = producerThreads;
+		this.maxGuess = maxGuess;
+		this.guessCount = new AtomicLong(0);
 		this.exec = Executors.newFixedThreadPool(this.numProducerThreads);
 	}
 	
 	/**
-	 * 
 	 * @param gen 0 or more AbstractGeneratorInfo instances to be used
 	 * @return number of threads needed to execute each Generator
 	 */
@@ -77,6 +86,9 @@ public class ProducerManagement extends AbstractManagementThread{
 		return neededThreads;
 	}
 	
+	/**
+	 * @return any threads left over after reserving the needed threads for each generator
+	 */
 	public int getUnusedThreads(){
 		return this.unusedThreads;
 	}
@@ -139,8 +151,13 @@ public class ProducerManagement extends AbstractManagementThread{
 			guesses[index] = guess;
 			if(index < (gens.length - 1))
 				generateGuess(gens, index + 1,  guesses);
-			else
+			else{
+				this.guessCount.getAndIncrement();
+				if(this.guessCount.get() > this.maxGuess){
+					this.notifier.haltThread(ThreadType.PRODUCERS);
+				}
 				this.exType.addGuessObject(this.exType.makeGuessObject(gens, guesses));
+			}
 		}
 	}
 
@@ -150,13 +167,13 @@ public class ProducerManagement extends AbstractManagementThread{
 			this.log.info("ProducerThreads shutdown");
 			this.notifier.haltThread(ThreadType.PRODUCERS);
 			this.exec.shutdown();
-			this.exType.clearCollector(this.collectionQueue);
+			this.exType.clearCollectorQueue(this.collectionQueue);
 			this.exec.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
 			this.exec.shutdownNow();
-			this.exType.clearCollector(this.collectionQueue);
+			this.exType.clearCollectorQueue(this.collectionQueue);
 			this.log.info("ProducerThreads complete");
 		}
 	}

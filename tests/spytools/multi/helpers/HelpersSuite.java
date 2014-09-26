@@ -7,5 +7,5 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ HelpersTest.class })
 public class HelpersSuite {
-
+//test suite for helpers
 }

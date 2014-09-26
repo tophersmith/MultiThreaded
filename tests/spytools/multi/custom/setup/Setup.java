@@ -4,15 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
-import spytools.multi.custom.generators.AbstractGeneratorInfo;
-import spytools.multi.custom.generators.BruteGenerator;
-import spytools.multi.custom.generators.DictionaryGenerator;
 import spytools.multi.execplan.AbstractExecutionPlan;
 import spytools.multi.execplan.consumer.AbstractExecutionConsumer;
+import spytools.multi.generators.AbstractGeneratorInfo;
+import spytools.multi.generators.BruteGenerator;
+import spytools.multi.generators.DictionaryGenerator;
 import spytools.multi.helpers.SingleGuess;
 import spytools.multi.storage.AbstractGuessObject;
 import spytools.multi.types.CharSetType;
@@ -80,7 +77,7 @@ public class Setup {
 	public static class TestType extends AbstractExecutionPlan{
 
 		protected TestType(boolean stopOnFirst) {
-			super(stopOnFirst);
+			super(stopOnFirst, new TestConsumer());
 		}
 
 		@Override
@@ -91,11 +88,6 @@ public class Setup {
 		@Override
 		public AbstractGuessObject makeGuessObject(AbstractGeneratorInfo[] gens, SingleGuess[] guesses) throws InterruptedException {
 			return new TestObject(guesses[0].toString());
-		}
-
-		@Override
-		protected void generateQueuesByName(Map<String, BlockingQueue<SingleGuess>> generatorQueues, int generators) {
-			generatorQueues.put("TestGenerator", new ArrayBlockingQueue<SingleGuess>(500));
 		}
 
 		@Override
@@ -112,9 +104,28 @@ public class Setup {
 		public AbstractExecutionConsumer getConsumer() {
 			return null;
 		}
-		
 	}
 	
+	public static class TestConsumer extends AbstractExecutionConsumer{
+
+		@Override
+		public AbstractExecutionConsumer duplicate() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isCorrect(AbstractGuessObject guess) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void reset() {
+			// TODO Auto-generated method stub
+		}
+		
+	}
 	
 	public static class TestObject extends AbstractGuessObject{
 		String s;

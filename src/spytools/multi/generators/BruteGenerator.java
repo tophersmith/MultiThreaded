@@ -1,15 +1,24 @@
-package spytools.multi.custom.generators;
+package spytools.multi.generators;
 
 import java.math.BigInteger;
 
 import spytools.multi.helpers.Helpers;
 
+/**
+ * BruteGenerator takes a characterSet, a minimum and maximum length of guessesand will 
+ * generate every possible combination of characters in the characterset from the sorted 
+ * minimum number of characters to the sorted max 
+ * 
+ * @author smitc
+ */
 public class BruteGenerator extends AbstractGeneratorInfo {
 	private final int minLength;
 	private final BigInteger min;
 	private final int maxLength;
 	private final BigInteger max;
 	private char[] charSet; // Character Set
+	BigInteger bigThreadNum;
+	BigInteger bigAllocThreadNum;
 	
 	private BigInteger currentGuessNum = null;
 	private String currentGuess;
@@ -24,6 +33,9 @@ public class BruteGenerator extends AbstractGeneratorInfo {
 	
 	@Override
 	protected void initializeInfo() {
+		this.bigThreadNum = BigInteger.valueOf(this.threadNum);
+		this.bigAllocThreadNum = BigInteger.valueOf(this.allocatedThreads);
+
 		resetCounter();
 	}
 	
@@ -31,7 +43,6 @@ public class BruteGenerator extends AbstractGeneratorInfo {
 	public int getNeededThreads(){
 		return 1;
 	}
-	
 	
 	@Override
 	public String generateNextGuess(){

@@ -11,5 +11,5 @@ import spytools.multi.runner.RunnerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({GeneratorsTestSuite.class, HelpersSuite.class, RunnerSuite.class})
 public class AllTests {
-
+//runs all testsuites
 }

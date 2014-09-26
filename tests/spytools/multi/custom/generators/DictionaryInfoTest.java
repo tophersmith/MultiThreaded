@@ -7,6 +7,7 @@ import java.io.File;
 import org.junit.Test;
 
 import spytools.multi.custom.setup.Setup;
+import spytools.multi.generators.AbstractGeneratorInfo;
 
 public class DictionaryInfoTest {
 

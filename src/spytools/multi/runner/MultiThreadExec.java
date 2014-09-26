@@ -4,8 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import spytools.multi.custom.generators.AbstractGeneratorInfo;
 import spytools.multi.execplan.AbstractExecutionPlan;
+import spytools.multi.generators.AbstractGeneratorInfo;
 import spytools.multi.helpers.SetupException;
 import spytools.multi.helpers.ThreadNotifier;
 import spytools.multi.helpers.ThreadNotifier.ThreadType;
@@ -27,30 +27,42 @@ public class MultiThreadExec {
 	private ThreadNotifier notifier = ThreadNotifier.getInstance();
 	
 	
-	private MultiThreadExec(AbstractExecutionPlan exType, int suggestProducers, AbstractGeneratorInfo... gens) throws SetupException{
+	private MultiThreadExec(AbstractExecutionPlan exType, int suggestProducers, int threadsToUse, long maxGuesses, AbstractGeneratorInfo... gens) throws SetupException{
 		this.exType = exType;
 		this.exType.addGenerators(gens);
-		this.threadsAvail = Runtime.getRuntime().availableProcessors();
+		
+		this.threadsAvail = threadsToUse;
+		boolean threadOverrideDisabled = true;
+		if(this.threadsAvail < 1){
+			this.threadsAvail = Runtime.getRuntime().availableProcessors();
+			threadOverrideDisabled = false;
+		} 
+		
 		int minProducers = ProducerManagement.determineNeededThreads(exType.getGenerators());
 		int producers = suggestProducers == 0 ? this.threadsAvail/2 : suggestProducers;
 		
 		//if there aren't enough processors for one thread per processor and one consumer, 
 		//double threads to make room. This will cause a slowdown, but may not be too bad.
 		if(minProducers > producers){
+			if(threadOverrideDisabled){
+				throw new SetupException("Not enough threads were reserved for the Execution Plan given");
+			}
 			if(this.threadsAvail*2 > minProducers+1){
 				this.threadsAvail = minProducers * 2;
 				producers = this.threadsAvail/2;
 			}
 		} 
 		
-		this.pThread = new ProducerManagement(exType, producers, exType.getGenerators());
+		this.pThread = new ProducerManagement(exType, producers, maxGuesses, exType.getGenerators());
 		this.threadsAvail = this.threadsAvail - producers + this.pThread.getUnusedThreads();
 		this.cThread = new ConsumerManagement(exType, this.threadsAvail);
 		this.exec = Executors.newFixedThreadPool(2);
 	}
-	
+	public MultiThreadExec(AbstractExecutionPlan exType, int threadsToUse, AbstractGeneratorInfo... gens) throws SetupException{
+		this(exType, 0, threadsToUse, Long.MAX_VALUE, gens);
+	}
 	public MultiThreadExec(AbstractExecutionPlan exType, AbstractGeneratorInfo... gens) throws SetupException{
-		this(exType, 0, gens);
+		this(exType, 0, 0, Long.MAX_VALUE, gens);
 	}
 	
 	public void execute(){

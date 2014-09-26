@@ -7,9 +7,9 @@ package spytools.multi.helpers;
  * @author Chris
  */
 public class SingleGuess {
-	private Object guess;
+	private String guess;
 	private String generatedBy;
-	public SingleGuess(Object guess, String generatedBy){
+	public SingleGuess(String guess, String generatedBy){
 		this.guess = guess;
 		this.generatedBy = generatedBy;
 	}
