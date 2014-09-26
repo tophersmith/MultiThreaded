@@ -46,7 +46,7 @@ public abstract class AbstractGeneratorInfo implements Runnable{
 			try{
 				String s = this.generateNextGuess();
 				this.queue.put(new SingleGuess(s , this.generatorQueueName));
-				//this.log.debug(this.toString() + " offered " + s);
+				this.log.debug(this.toString() + " offered " + s);
 			} catch(InterruptedException e){
 				if(!this.notifier.shouldHalt(ThreadType.PRODUCERS))
 					e.printStackTrace();
@@ -75,7 +75,8 @@ public abstract class AbstractGeneratorInfo implements Runnable{
 	}
 	
 	/**
-	 * Initialize any necessary information for a given Generator
+	 * Initialize any necessary information for a given Generator.
+	 * Executes just before starting thread
 	 */
 	protected abstract void initializeInfo();
 	

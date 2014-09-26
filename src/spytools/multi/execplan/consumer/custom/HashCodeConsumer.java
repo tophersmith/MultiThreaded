@@ -29,11 +29,10 @@ public class HashCodeConsumer extends AbstractExecutionConsumer{
 			String pass = ((UserPassStorage) guess).getPass();
 			
 			int test = 0;
-			test += getHash("UserIdentifier", user);
+			test += getHash("User", user);
 			test += getHash("Password", pass);
 			isGood = test == this.target;
 			
-			test += getHash("Old password", "");
 			isGood = (isGood) || (test == this.target);
 		}
 		return isGood;
